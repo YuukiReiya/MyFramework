@@ -4,6 +4,3 @@ token.json/
 # 生成
 obj/
 bin/
-
-# iniファイル
-system.ini
