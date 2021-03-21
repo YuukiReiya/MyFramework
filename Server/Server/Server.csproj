@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Nullable>disable</Nullable>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Protocol.cs" />
+    <Compile Remove="ProtocolGrpc.cs" />
+  </ItemGroup>
+
+	<ItemGroup>
+    <Reference Include="Google.Protobuf">
+      <HintPath>lib\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Core">
+      <HintPath>lib\Grpc.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Core.Api">
+      <HintPath>lib\Grpc.Core.Api.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="REM ビルド前イベント実行&#xD;&#xA;&#xD;&#xA;REM デバッグ出力フラグ &quot;true:!=0&quot;&#xD;&#xA;set DEBUGFLAG=0&#xD;&#xA;&#xD;&#xA;REM batファイル&#xD;&#xA;::set INI_READER=bat\GetIni.bat&#xD;&#xA;set INI_READER=$(ProjDir)../../bat\GetIni.bat&#xD;&#xA;&#xD;&#xA;REM 読み込むINIファイル&#xD;&#xA;set INI_FILE_PATH=system.ini&#xD;&#xA;&#xD;&#xA;echo -------------------------------------------------------------------&#xD;&#xA;echo 読み込むini:%25INI_FILE_PATH%25&#xD;&#xA;echo 書き出し先:$(OutDir)&#xD;&#xA;echo -------------------------------------------------------------------&#xD;&#xA;&#xD;&#xA;setlocal enabledelayedexpansion&#xD;&#xA;&#xD;&#xA;for /f &quot;tokens=1 delims==&quot; %25%25k in (%25INI_FILE_PATH%25) do (&#xD;&#xA;&#xD;&#xA;  set KEY=%25%25k&#xD;&#xA;  set FORMAT=!KEY:~0,1!!KEY:~-1,1!&#xD;&#xA;&#xD;&#xA;  REM DEBUG出力&#xD;&#xA;  if not %25DEBUGFLAG%25==0 echo ↓読み込んでいる値↓&#xD;&#xA;  if not %25DEBUGFLAG%25==0 echo キー:!KEY!&#xD;&#xA;  if not %25DEBUGFLAG%25==0 echo フォーマット:!FORMAT!&#xD;&#xA;&#xD;&#xA;  if not &quot;!FORMAT!&quot;==&quot;[]&quot; (&#xD;&#xA;    call %25INI_READER%25 :READ_INI_VAL &quot;COPY_FILE_PATH&quot; !KEY! COPYPATH %25INI_FILE_PATH%25&#xD;&#xA;    if not %25DEBUGFLAG%25==0 echo ファイルから読み取った値:!COPYPATH!&#xD;&#xA;&#xD;&#xA;    REM コピーするファイルがあるか確認&#xD;&#xA;    if exist !COPYPATH! (&#xD;&#xA;      if not %25DEBUGFLAG%25==0 echo コピー元のパス:&quot;!COPYPATH!&quot;&#xD;&#xA;      copy /y &quot;!COPYPATH!&quot; &quot;$(OutDir)&quot;&#xD;&#xA;    ) else if !COPYPATH!==NULL ( &#xD;&#xA;      if not %25DEBUGFLAG%25==0 echo 読み込みに失敗しました。&#xD;&#xA;    ) else (&#xD;&#xA;      if not %25DEBUGFLAG%25==0 echo コピーファイルがありませんでした。:&quot;!COPYPATH!&quot;&#xD;&#xA;    )&#xD;&#xA;    REM 見にくいので一行だけ空行を挟む&#xD;&#xA;    if not %25DEBUGFLAG%25==0 echo.&#xD;&#xA;  )&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;::    &#xD;&#xA;endlocal" />
+  </Target>
+
+</Project>
