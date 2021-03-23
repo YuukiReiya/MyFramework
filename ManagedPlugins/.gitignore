@@ -1,0 +1,4 @@
+# binとobjは不要
+ManagedPlugins/bin
+ManagedPlugins/obj
+
