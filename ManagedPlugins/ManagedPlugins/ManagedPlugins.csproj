@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Define.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="resources\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&#xD;&#xA;REM ビルド後イベント実行&#xD;&#xA;REM ------------------------------------------------&#xD;&#xA;REM INIファイルで指定したファイルにdllを書き出す。&#xD;&#xA;REM ------------------------------------------------&#xD;&#xA;&#xD;&#xA;REM デバッグ出力フラグ &quot;true:!=0&quot;&#xD;&#xA;set DEBUG_FLAG=0&#xD;&#xA;&#xD;&#xA;REM batファイル&#xD;&#xA;set INI_BAT=$(ProjDir)../../bat\GetIni.bat&#xD;&#xA;&#xD;&#xA;REM 読み込むiniファイル&#xD;&#xA;set READ_INI_PATH=$(ProjDir)resources\build.ini&#xD;&#xA;&#xD;&#xA;REM batが無ければ処理しない&#xD;&#xA;if not exist %25INI_BAT%25 (&#xD;&#xA;  echo バッチファイルが存在しない。&quot;%25INI_BAT%25&quot;&#xD;&#xA;  exit&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;REM iniが無ければ処理しない&#xD;&#xA;if not exist %25READ_INI_PATH%25 (&#xD;&#xA;  echo iniファイルが存在しない。&quot;%25READ_INI_PATH%25&quot;&#xD;&#xA;  exit&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;REM フォルダ内にある全ファイルに対して走らせるので遅延環境変数を使う&#xD;&#xA;setlocal enabledelayedexpansion&#xD;&#xA;&#xD;&#xA;for /f &quot;tokens=1 delims==&quot; %25%25k in (%25READ_INI_PATH%25) do (&#xD;&#xA;&#xD;&#xA;  set KEY=%25%25k&#xD;&#xA;  set FORMAT=!KEY:~0,1!!KEY:~-1,1!&#xD;&#xA;&#xD;&#xA;  if not %25DEBUG_FLAG%25==0 echo ↓読み込んでいる値↓&#xD;&#xA;  if not %25DEBUG_FLAG%25==0 echo キー:!KEY!&#xD;&#xA;  if not %25DEBUG_FLAG%25==0 echo フォーマット:!FORMAT!&#xD;&#xA;&#xD;&#xA;  if not &quot;!FORMAT!&quot;==&quot;[]&quot; (&#xD;&#xA;    call %25INI_BAT%25 :READ_INI_VAL &quot;OUTPUT&quot; !KEY! COPYPATH  %25READ_INI_PATH%25&#xD;&#xA;    if not %25DEBUG_FLAG%25==0 echo ファイルから読み取った値:!COPYPATH!&#xD;&#xA;    &#xD;&#xA;    REM コピー先のフォルダがあるか&#xD;&#xA;    if exist !COPYPATH! (&#xD;&#xA;      if not %25DEBUG_FLAG%25==0 echo コピー先のパス:&quot;!COPYPATH!&quot;&#xD;&#xA;      REM 出力ファイル(*.dll)をコピー&#xD;&#xA;      copy /y &quot;$(OutDir)$(TargetFileName)&quot; &quot;!COPYPATH!&quot;&#xD;&#xA;    ) else if !COPYPATH!==NULL ( &#xD;&#xA;      if not %25DEBUG_FLAG%25==0 echo 読み込みに失敗しました。&#xD;&#xA;    ) else (&#xD;&#xA;      if not %25DEBUG_FLAG%25==0 echo コピー先のフォルダがありませんでした。:&quot;!COPYPATH!&quot;&#xD;&#xA;    )&#xD;&#xA;    REM 見にくいので一行だけ空行を挟む&#xD;&#xA;    if not %25DEBUG_FLAG%25==0 echo.&#xD;&#xA;  )&#xD;&#xA;)&#xD;&#xA;REM 遅延環境変数を使うのはココで終わり&#xD;&#xA;endlocal" />
+  </Target>
+
+</Project>
