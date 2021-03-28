@@ -1,0 +1,47 @@
+.vs/
+.vscode/
+
+# bat
+#bat/
+
+# gRPC
+Client/Assets/Plugins/Google.Protobuf
+Client/Assets/Plugins/Google.Protobuf.meta
+Client/Assets/Plugins/Grpc.Core
+Client/Assets/Plugins/Grpc.Core.meta
+Client/Assets/Plugins/Grpc.Core.Api
+Client/Assets/Plugins/Grpc.Core.Api.meta
+Client/Assets/Plugins/System.Buffers
+Client/Assets/Plugins/System.Buffers.meta
+Client/Assets/Plugins/System.Memory
+Client/Assets/Plugins/System.Memory.meta
+Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe
+Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.meta
+Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.meta
+
+# Client
+#Client/
+Client/Library
+Client/Logs
+Client/obj
+Client/Temp
+
+# gRPC
+gRPC/*
+
+# Protobuf
+#Protobuf/
+
+# Server
+#Server/
+Server/Server/bin/
+Server/Server/obj/
+
+# Setup
+Setup/
+
+# Managed Plugin (.NET Standard)
+#ManagedPlugins/*
+
+# Native Plugin (C++)
+#NativePlugins/*
