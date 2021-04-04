@@ -15,12 +15,12 @@ namespace Editor.Expansion
     [InitializeOnLoad]
     public class FolderKeep : AssetPostprocessor
     {
-        //private static FolderKeep instance = null;
-        //private static FolderKeep Instance
-        //{
-        //    get => instance = (instance == null) ? new FolderKeep() : instance;
-        //}
-        private static FolderKeep Instance { get; } = new FolderKeep();
+        private static FolderKeep instance = null;
+        private static FolderKeep Instance
+        {
+            get => instance = (instance == null) ? new FolderKeep() : instance;
+        }
+        //private static FolderKeep Instance { get; } = new FolderKeep();
 
 
         /// <summary>
