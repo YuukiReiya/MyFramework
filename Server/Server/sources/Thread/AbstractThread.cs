@@ -19,6 +19,19 @@ namespace Framework
         /// </summary>
         public bool IsSuspensionProcess = false;
 
+        /// <summary>
+        /// FPS制限無しフラグ
+        /// memo.trueだとFPSに制限を掛けない
+        /// </summary>
+        public bool IsUnlimitedFPS { get; set; } = false;
+
+#if DEBUG || _DEBUG
+        /// <summary>
+        /// スレッドIDのCLI上出力フラグ
+        /// </summary>
+        protected bool IsDisplayThreadID { get; set; } = true;
+#endif
+
         public AbstractThread(uint fps)
         {
             TargetFrameRate = fps == 0 ? 1 : fps;//0除算回避
@@ -59,6 +72,10 @@ namespace Framework
                 //  中断フラグが立ってなければ処理する
                 if (!IsSuspensionProcess)
                 {
+#if DEBUG || _DEBUG
+                    if (IsDisplayThreadID) DisplayThreadID();
+#endif
+
                     //  処理
                     Process();
                 }
@@ -100,5 +117,12 @@ namespace Framework
                 Thread.Sleep(sleepTime);
             }
         }
+
+#if DEBUG || _DEBUG
+        private void DisplayThreadID()
+        {
+            Console.WriteLine($"class:{this.GetType()} ThreadID:{Thread.CurrentThread.ManagedThreadId}");
+        }
+#endif
     }
 }
