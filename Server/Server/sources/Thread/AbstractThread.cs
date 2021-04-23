@@ -29,7 +29,7 @@ namespace Framework
         /// <summary>
         /// スレッドIDのCLI上出力フラグ
         /// </summary>
-        protected bool IsDisplayThreadID { get; set; } = true;
+        protected bool IsDisplayThreadID { get; set; } = false;
 #endif
 
         public AbstractThread(uint fps)
