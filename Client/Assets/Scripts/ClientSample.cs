@@ -22,7 +22,6 @@ namespace Sample
 
         Task duplexChatReciveTask = null;
         uint cnt = 0;
-        bool isRun = false;
         public string IPAddress { get; set; } = "127.0.0.1";
         public int Port { get; set; } = 1122;
 
@@ -103,7 +102,7 @@ namespace Sample
                         await call.ResponseHeadersAsync;
                         //call.ResponseHeadersAsync.IsCompleted
                     });
-                    //if (isRun) return;
+
                     //送信
                     int i = 0;
                     while (i < ChatRequests.Count)
@@ -118,7 +117,7 @@ namespace Sample
                     await call.RequestStream.CompleteAsync();
                     await duplexChatReciveTask;
                     //receiveTask.Dispose();
-                    
+
                     Debug.Log("チャット終了");
                 }
 
