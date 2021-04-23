@@ -10,19 +10,19 @@ using Server.gRPC;
 using Server.Impl;
 
 class NetworkThread : AbstractThread
-    {
+{
     public NetworkThread(uint fps) : base(fps) { }
-        ~NetworkThread() { }
+    ~NetworkThread() { }
 
-        private const string IPAddress = "127.0.0.1";
-        private const int Port = 1122;
+    private const string IPAddress = "127.0.0.1";
+    private const int Port = 1122;
 
-        public override void StartThread()
+    public override void StartThread()
+    {
+        thread = new Thread(new ThreadStart(() => { base.StartThread(); }));
+        Setup();
+        try
         {
-            thread = new Thread(new ThreadStart(() => { base.StartThread(); }));
-            Setup();
-            try
-            {
             Grpc.Core.Server server = new Grpc.Core.Server(
                 new List<ChannelOption>
                 {
@@ -45,22 +45,22 @@ class NetworkThread : AbstractThread
             server.Start();
         }
         catch (Exception e)
-            {
-                Console.WriteLine($"エラー\n{e.Message}");
-            }
-            thread.Start();
-        }
-
-        public override void Process()
         {
-            //Console.WriteLine($"{instance.DeltaTimeWatch.Elapsed.TotalMilliseconds}");
+            Console.WriteLine($"エラー\n{e.Message}");
         }
-
-        /// <summary>
-        /// 初期化
-        /// </summary>
-        private void Setup()
-        {
-
-        }
+        thread.Start();
     }
+
+    public override void Process()
+    {
+        //Console.WriteLine($"{instance.DeltaTimeWatch.Elapsed.TotalMilliseconds}");
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    private void Setup()
+    {
+
+    }
+}
