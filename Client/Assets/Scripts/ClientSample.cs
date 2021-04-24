@@ -48,17 +48,13 @@ namespace Sample
             }
         }
 
-        //IEnumerable<DuplexChatSend> ChatRequests = new List<DuplexChatSend>();
         List<DuplexChatSend> ChatRequests = new List<DuplexChatSend>();
         /// <summary>
         /// 
         /// </summary>
         void OnUpdate()
         {
-            //OnUpdateChat().Wait();
-            OnUpdateChat().Wait(5);
-            //OnUpdatePing();
-
+            OnUpdateChat().Wait(1);
         }
 
         void OnUpdatePing()
@@ -91,9 +87,6 @@ namespace Sample
             {
                 using (var call = bidirectionalStreamingClient.DuplexChat())
                 {
-                    //if (duplexChatReciveTask != null && duplexChatReciveTask.Status == TaskStatus.Running) return;
-                    //if (duplexChatReciveTask != null && duplexChatReciveTask.Status == TaskStatus.Running) return;
-
                     //受信
                     duplexChatReciveTask = Task.Run(async () =>
                     {
@@ -108,7 +101,6 @@ namespace Sample
                             }, null);
                         }
                         await call.ResponseHeadersAsync;
-                        //call.ResponseHeadersAsync.IsCompleted
                     });
 
                     //送信
@@ -124,9 +116,6 @@ namespace Sample
                     ChatRequests.Clear();
                     await call.RequestStream.CompleteAsync();
                     await duplexChatReciveTask;
-                    //receiveTask.Dispose();
-
-                    Debug.Log("チャット終了");
                 }
 
             }
