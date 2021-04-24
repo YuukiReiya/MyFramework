@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using Grpc.Core;
 using Server.gRPC;
 using Grpc;
+using System.Threading;
 using System.Threading.Tasks;
 
 /*
@@ -15,11 +17,13 @@ namespace Sample
 {
     public class ClientSample : MonoBehaviour
     {
+        [SerializeField] uGUI.Chat.UIChatWindow chatWindow;
         Action S2C_Recive = null;
         Channel channel;
         Unary.UnaryClient unaryClient;
         BidirectionalStreaming.BidirectionalStreamingClient bidirectionalStreamingClient;
-
+        SynchronizationContext context;
+        SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         Task duplexChatReciveTask = null;
         uint cnt = 0;
         public string IPAddress { get; set; } = "127.0.0.1";
@@ -28,6 +32,7 @@ namespace Sample
         // Start is called before the first frame update
         void Start()
         {
+            context = SynchronizationContext.Current;
             Connect();
         }
 
@@ -45,17 +50,13 @@ namespace Sample
             }
         }
 
-        //IEnumerable<DuplexChatSend> ChatRequests = new List<DuplexChatSend>();
         List<DuplexChatSend> ChatRequests = new List<DuplexChatSend>();
         /// <summary>
         /// 
         /// </summary>
         void OnUpdate()
         {
-            //OnUpdateChat().Wait();
-            OnUpdateChat().Wait(5);
-            //OnUpdatePing();
-
+            OnUpdateChat().Wait(1);
         }
 
         void OnUpdatePing()
@@ -88,19 +89,41 @@ namespace Sample
             {
                 using (var call = bidirectionalStreamingClient.DuplexChat())
                 {
-                    //if (duplexChatReciveTask != null && duplexChatReciveTask.Status == TaskStatus.Running) return;
-                    //if (duplexChatReciveTask != null && duplexChatReciveTask.Status == TaskStatus.Running) return;
-
                     //受信
                     duplexChatReciveTask = Task.Run(async () =>
                     {
-                        while (await call.ResponseStream.MoveNext())
-                        {
-                            var current = call.ResponseStream.Current;
-                            Debug.Log($"Recive\n{current.UserID}:{current.Message}");
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                            while (await call.ResponseStream.MoveNext())
+                            {
+                                var current = call.ResponseStream.Current;
+                                Debug.Log($"Recive\n{current.UserID}:{current.Message}");
+
+                                // 新規のメッセージだけを選別してリストに追加する
+                                if (!chatWindow.Messages.Any(message => message.Hash == current.Hash))
+                                {
+                                    chatWindow.Messages.Add(current);
+                                    context.Post(_ =>
+                                    {
+                                        chatWindow.AddMessage(current);
+                                    }, null);
+                                }
+                            }
+                            await call.ResponseHeadersAsync;
                         }
-                        await call.ResponseHeadersAsync;
-                        //call.ResponseHeadersAsync.IsCompleted
+                        catch (Exception e)
+                        {
+                            context.Post(_ =>
+                            {
+                                Debug.LogError("Receiveタスク例外:" + e.GetType() + "\n" + e.Message);
+                            }, null);
+                            throw;
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
                     });
 
                     //送信
@@ -116,9 +139,6 @@ namespace Sample
                     ChatRequests.Clear();
                     await call.RequestStream.CompleteAsync();
                     await duplexChatReciveTask;
-                    //receiveTask.Dispose();
-
-                    Debug.Log("チャット終了");
                 }
 
             }
@@ -128,6 +148,9 @@ namespace Sample
                 duplexChatReciveTask.Dispose();
                 Disconnect();
                 throw;
+            }
+            finally
+            {
             }
         }
 

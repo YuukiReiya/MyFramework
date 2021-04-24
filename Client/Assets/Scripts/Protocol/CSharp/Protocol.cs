@@ -27,16 +27,16 @@ namespace Server.gRPC {
             "ChZzb3VyY2VzL1Byb3RvY29sLnByb3RvEgRnUlBDIh0KBlJlc2x1dBITCgtl",
             "cnJvcl9sZXZlbBgBIAEoESISChBDMlNfUGluZ19SZXF1ZXN0IiEKEVMyQ19Q",
             "aW5nX1Jlc3BvbnNlEgwKBHBpbmcYASABKAEiLgoLQ2hhdFJlcXVlc3QSDgoG",
-            "dXNlcklEGAEgASgFEg8KB21lc3NhZ2UYAiABKAkiLwoMQ2hhdFJlc3BvbnNl",
-            "Eg4KBnVzZXJJRBgBIAEoBRIPCgdtZXNzYWdlGAIgASgJIjEKDkR1cGxleENo",
-            "YXRTZW5kEg4KBnVzZXJJRBgBIAEoBRIPCgdtZXNzYWdlGAIgASgJIjQKEUR1",
-            "cGxleENoYXRSZWNlaXZlEg4KBnVzZXJJRBgBIAEoBRIPCgdtZXNzYWdlGAIg",
-            "ASgJMkIKBVVuYXJ5EjkKBFBpbmcSFi5nUlBDLkMyU19QaW5nX1JlcXVlc3Qa",
-            "Fy5nUlBDLlMyQ19QaW5nX1Jlc3BvbnNlIgAyEQoPU2VydmVyU3RyZWFtaW5n",
-            "MhEKD0NsaWVudFN0cmVhbWluZzJbChZCaWRpcmVjdGlvbmFsU3RyZWFtaW5n",
-            "EkEKCkR1cGxleENoYXQSFC5nUlBDLkR1cGxleENoYXRTZW5kGhcuZ1JQQy5E",
-            "dXBsZXhDaGF0UmVjZWl2ZSIAKAEwAUIOqgILU2VydmVyLmdSUENiBnByb3Rv",
-            "Mw=="));
+            "dXNlcklEGAEgASgNEg8KB21lc3NhZ2UYAiABKAkiLwoMQ2hhdFJlc3BvbnNl",
+            "Eg4KBnVzZXJJRBgBIAEoDRIPCgdtZXNzYWdlGAIgASgJIjEKDkR1cGxleENo",
+            "YXRTZW5kEg4KBnVzZXJJRBgBIAEoDRIPCgdtZXNzYWdlGAIgASgJIkIKEUR1",
+            "cGxleENoYXRSZWNlaXZlEg4KBnVzZXJJRBgBIAEoDRIPCgdtZXNzYWdlGAIg",
+            "ASgJEgwKBGhhc2gYAyABKA0yQgoFVW5hcnkSOQoEUGluZxIWLmdSUEMuQzJT",
+            "X1BpbmdfUmVxdWVzdBoXLmdSUEMuUzJDX1BpbmdfUmVzcG9uc2UiADIRCg9T",
+            "ZXJ2ZXJTdHJlYW1pbmcyEQoPQ2xpZW50U3RyZWFtaW5nMlsKFkJpZGlyZWN0",
+            "aW9uYWxTdHJlYW1pbmcSQQoKRHVwbGV4Q2hhdBIULmdSUEMuRHVwbGV4Q2hh",
+            "dFNlbmQaFy5nUlBDLkR1cGxleENoYXRSZWNlaXZlIgAoATABQg6qAgtTZXJ2",
+            "ZXIuZ1JQQ2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -46,7 +46,7 @@ namespace Server.gRPC {
             new pbr::GeneratedClrTypeInfo(typeof(global::Server.gRPC.ChatRequest), global::Server.gRPC.ChatRequest.Parser, new[]{ "UserID", "Message" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Server.gRPC.ChatResponse), global::Server.gRPC.ChatResponse.Parser, new[]{ "UserID", "Message" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Server.gRPC.DuplexChatSend), global::Server.gRPC.DuplexChatSend.Parser, new[]{ "UserID", "Message" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Server.gRPC.DuplexChatReceive), global::Server.gRPC.DuplexChatReceive.Parser, new[]{ "UserID", "Message" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Server.gRPC.DuplexChatReceive), global::Server.gRPC.DuplexChatReceive.Parser, new[]{ "UserID", "Message", "Hash" }, null, null, null, null)
           }));
     }
     #endregion
@@ -586,9 +586,9 @@ namespace Server.gRPC {
 
     /// <summary>Field number for the "userID" field.</summary>
     public const int UserIDFieldNumber = 1;
-    private int userID_;
+    private uint userID_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int UserID {
+    public uint UserID {
       get { return userID_; }
       set {
         userID_ = value;
@@ -647,7 +647,7 @@ namespace Server.gRPC {
     #else
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
@@ -664,7 +664,7 @@ namespace Server.gRPC {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
@@ -680,7 +680,7 @@ namespace Server.gRPC {
     public int CalculateSize() {
       int size = 0;
       if (UserID != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UserID);
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UserID);
       }
       if (Message.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
@@ -717,7 +717,7 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -739,7 +739,7 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -797,9 +797,9 @@ namespace Server.gRPC {
 
     /// <summary>Field number for the "userID" field.</summary>
     public const int UserIDFieldNumber = 1;
-    private int userID_;
+    private uint userID_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int UserID {
+    public uint UserID {
       get { return userID_; }
       set {
         userID_ = value;
@@ -858,7 +858,7 @@ namespace Server.gRPC {
     #else
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
@@ -875,7 +875,7 @@ namespace Server.gRPC {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
@@ -891,7 +891,7 @@ namespace Server.gRPC {
     public int CalculateSize() {
       int size = 0;
       if (UserID != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UserID);
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UserID);
       }
       if (Message.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
@@ -928,7 +928,7 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -950,7 +950,7 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -1008,9 +1008,9 @@ namespace Server.gRPC {
 
     /// <summary>Field number for the "userID" field.</summary>
     public const int UserIDFieldNumber = 1;
-    private int userID_;
+    private uint userID_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int UserID {
+    public uint UserID {
       get { return userID_; }
       set {
         userID_ = value;
@@ -1069,7 +1069,7 @@ namespace Server.gRPC {
     #else
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
@@ -1086,7 +1086,7 @@ namespace Server.gRPC {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
@@ -1102,7 +1102,7 @@ namespace Server.gRPC {
     public int CalculateSize() {
       int size = 0;
       if (UserID != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UserID);
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UserID);
       }
       if (Message.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
@@ -1139,7 +1139,7 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -1161,7 +1161,7 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -1209,6 +1209,7 @@ namespace Server.gRPC {
     public DuplexChatReceive(DuplexChatReceive other) : this() {
       userID_ = other.userID_;
       message_ = other.message_;
+      hash_ = other.hash_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1219,9 +1220,9 @@ namespace Server.gRPC {
 
     /// <summary>Field number for the "userID" field.</summary>
     public const int UserIDFieldNumber = 1;
-    private int userID_;
+    private uint userID_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int UserID {
+    public uint UserID {
       get { return userID_; }
       set {
         userID_ = value;
@@ -1236,6 +1237,17 @@ namespace Server.gRPC {
       get { return message_; }
       set {
         message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "hash" field.</summary>
+    public const int HashFieldNumber = 3;
+    private uint hash_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Hash {
+      get { return hash_; }
+      set {
+        hash_ = value;
       }
     }
 
@@ -1254,6 +1266,7 @@ namespace Server.gRPC {
       }
       if (UserID != other.UserID) return false;
       if (Message != other.Message) return false;
+      if (Hash != other.Hash) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1262,6 +1275,7 @@ namespace Server.gRPC {
       int hash = 1;
       if (UserID != 0) hash ^= UserID.GetHashCode();
       if (Message.Length != 0) hash ^= Message.GetHashCode();
+      if (Hash != 0) hash ^= Hash.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1280,11 +1294,15 @@ namespace Server.gRPC {
     #else
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(Message);
+      }
+      if (Hash != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Hash);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1297,11 +1315,15 @@ namespace Server.gRPC {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       if (UserID != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(UserID);
+        output.WriteUInt32(UserID);
       }
       if (Message.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(Message);
+      }
+      if (Hash != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Hash);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -1313,10 +1335,13 @@ namespace Server.gRPC {
     public int CalculateSize() {
       int size = 0;
       if (UserID != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UserID);
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UserID);
       }
       if (Message.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+      }
+      if (Hash != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Hash);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1335,6 +1360,9 @@ namespace Server.gRPC {
       if (other.Message.Length != 0) {
         Message = other.Message;
       }
+      if (other.Hash != 0) {
+        Hash = other.Hash;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1350,11 +1378,15 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
             Message = input.ReadString();
+            break;
+          }
+          case 24: {
+            Hash = input.ReadUInt32();
             break;
           }
         }
@@ -1372,11 +1404,15 @@ namespace Server.gRPC {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            UserID = input.ReadInt32();
+            UserID = input.ReadUInt32();
             break;
           }
           case 18: {
             Message = input.ReadString();
+            break;
+          }
+          case 24: {
+            Hash = input.ReadUInt32();
             break;
           }
         }
