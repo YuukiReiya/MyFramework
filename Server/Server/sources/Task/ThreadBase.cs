@@ -2,28 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Diagnostics;
+
 namespace Framework
 {
-    abstract class AbstractThread
+    abstract class ThreadBase
     {
-        public Thread thread { get; protected set; }
+        public Task task { get; private set; }
+        public CancellationTokenSource tokenSource = new CancellationTokenSource();
         public uint TargetFrameRate { get; }
+        
         private double TargetFrameMilliSec { get { return 1000f / TargetFrameRate; } }
         private double prevTick, nowTick;
         private double elapsedTime;
         public Stopwatch DeltaTimeWatch { get; private set; } = new Stopwatch();
 
-        /// <summary>
-        /// ループ処理の中断フラグ
-        /// </summary>
-        public bool IsSuspensionProcess = false;
-
-        /// <summary>
-        /// FPS制限無しフラグ
-        /// memo.trueだとFPSに制限を掛けない
-        /// </summary>
-        public bool IsUnlimitedFPS { get; set; } = false;
+        protected SynchronizationContext context;
 
 #if DEBUG || _DEBUG
         /// <summary>
@@ -31,37 +26,50 @@ namespace Framework
         /// </summary>
         protected bool IsDisplayThreadID { get; set; } = false;
 #endif
+        /// <summary>
+        /// ループ処理の中断フラグ
+        /// </summary>
+        public bool IsSuspensionProcess = false;
 
-        public AbstractThread(uint fps)
+        /// <summary>
+        /// FPS制限無しフラグ
+        /// memo.trueだとFPS同期をしない
+        /// </summary>
+        public bool IsUnlimitedFPS { get; set; } = false;
+
+        public bool IsStopThread
+        {
+            set 
+            {
+                if (value)
+                {
+                    tokenSource.Cancel();
+                }
+            }
+        }
+
+        public ThreadBase(uint fps)
         {
             TargetFrameRate = fps == 0 ? 1 : fps;//0除算回避
             elapsedTime = 0;
         }
 
-        ~AbstractThread()
+        ~ThreadBase()
         {
-            Teardown();
+            tokenSource.Cancel();
             Console.WriteLine("スレッド停止");
         }
 
-        private void Setup()
+        protected virtual void Setup()
         {
             prevTick = Environment.TickCount;
             IsSuspensionProcess = false;
+            context = SynchronizationContext.Current;
         }
 
-        private void Teardown()
+        protected void Loop(CancellationToken token)
         {
-            if (thread != null)
-            {
-                thread.Join(0);
-                thread = null;
-            }
-        }
-
-        protected void Loop()
-        {
-            while (thread != null)
+            while (!token.IsCancellationRequested)
             {
                 //  現在の時間
                 nowTick = Environment.TickCount;
@@ -81,7 +89,7 @@ namespace Framework
                 }
 
                 //  フレーム待機
-                Sleep();
+                if (!IsUnlimitedFPS) Sleep();
 
                 //  カウント更新
                 prevTick = Environment.TickCount;
@@ -91,11 +99,13 @@ namespace Framework
         /// <summary>
         /// スレッドを起動
         /// </summary>
-        public virtual void StartThread()
+        public virtual void Start()
         {
-            Setup();
-            Loop();
-            Teardown();
+            task = Task.Run(() =>
+            {
+                Setup();
+                Loop(tokenSource.Token);
+            },tokenSource.Token);
         }
 
         /// <summary>
@@ -118,7 +128,7 @@ namespace Framework
             }
         }
 
-#if DEBUG || _DEBUG
+#if DEBUG||_DEBUG
         private void DisplayThreadID()
         {
             Console.WriteLine($"class:{this.GetType()} ThreadID:{Thread.CurrentThread.ManagedThreadId}");

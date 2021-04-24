@@ -1,3 +1,6 @@
+//型:https://qiita.com/yukina-ge/items/98fe190cef2024d45fbd
+//書き方:https://qiita.com/Captain_Blue/items/b7a1f4a42f48559fac0c
+
 syntax = "proto3";
 option csharp_namespace ="Server.gRPC";
 package gRPC;
@@ -88,13 +91,13 @@ service Unary{
 
 // CL→SV:チャットリクエスト
 message ChatRequest{
-    int32 userID=1;
+    uint32 userID=1;
     string message=2;
 }
 
 // SV→CL:チャットレスポンス
 message ChatResponse{
-    int32 userID=1;
+    uint32 userID=1;
     string message=2;
 }
 
@@ -115,14 +118,15 @@ service ClientStreaming{
 
 // CL→SV:双方向チャットリクエスト
 message DuplexChatSend{
-    int32 userID=1;
+    uint32 userID=1;
     string message=2;
 }
 
 // SV→CL:双方向チャットレスポンス
 message DuplexChatReceive{
-    int32 userID=1;
+    uint32 userID=1;
     string message=2;
+    uint32 hash=3;
 }
 
 service BidirectionalStreaming{
