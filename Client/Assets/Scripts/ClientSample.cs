@@ -5,6 +5,7 @@ using UnityEngine;
 using Grpc.Core;
 using Server.gRPC;
 using Grpc;
+using System.Threading;
 using System.Threading.Tasks;
 
 /*
@@ -15,11 +16,12 @@ namespace Sample
 {
     public class ClientSample : MonoBehaviour
     {
+        [SerializeField] uGUI.Chat.UIChatWindow chatWindow;
         Action S2C_Recive = null;
         Channel channel;
         Unary.UnaryClient unaryClient;
         BidirectionalStreaming.BidirectionalStreamingClient bidirectionalStreamingClient;
-
+        SynchronizationContext context;
         Task duplexChatReciveTask = null;
         uint cnt = 0;
         public string IPAddress { get; set; } = "127.0.0.1";
@@ -28,6 +30,7 @@ namespace Sample
         // Start is called before the first frame update
         void Start()
         {
+            context = SynchronizationContext.Current;
             Connect();
         }
 
@@ -98,6 +101,11 @@ namespace Sample
                         {
                             var current = call.ResponseStream.Current;
                             Debug.Log($"Recive\n{current.UserID}:{current.Message}");
+
+                            context.Post(_ =>
+                            {
+                                chatWindow.AddMessage(current);
+                            }, null);
                         }
                         await call.ResponseHeadersAsync;
                         //call.ResponseHeadersAsync.IsCompleted
