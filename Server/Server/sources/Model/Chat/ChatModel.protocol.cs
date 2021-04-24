@@ -12,7 +12,7 @@ namespace Chat
 {
     partial class ChatModel
     {
-
+        public uint Hash = 0;
     }
 }
 
@@ -47,13 +47,18 @@ partial class BidirectionalStreamingImpl : BidirectionalStreaming.BidirectionalS
                 {
                     ChatModel.Instance.Messages.Dequeue();
                 }
-                ChatModel.Instance.Messages.Enqueue(new ChatModel.Info(current.UserID, current.Message));
+                ChatModel.Instance.Messages.Enqueue(new ChatModel.Info
+                {
+                    UserID = current.UserID,
+                    Message = current.Message,
+                    Hash = ChatModel.Instance.Hash++
+                }) ;
                 var e = ChatModel.Instance.Messages.GetEnumerator();
                 while (e.MoveNext())
                 {
                     var message = e.Current;
-                    Console.WriteLine($"{message.UserID}:{message.Message}");
-                    await responseStream.WriteAsync(new DuplexChatReceive { UserID = message.UserID, Message = message.Message });
+                    Console.WriteLine($"{message.UserID}:{message.Message}:{message.Hash}");
+                    await responseStream.WriteAsync(new DuplexChatReceive { UserID = message.UserID, Message = message.Message ,Hash=message.Hash});
                 }
                 Console.WriteLine("===============End Chat===============");
             }

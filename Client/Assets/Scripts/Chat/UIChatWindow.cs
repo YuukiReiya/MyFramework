@@ -16,6 +16,8 @@ namespace uGUI.Chat
         // セルを使いまわすオブジェクトプール
         private ObjectPoolList<UIChatCell> cellPoolList = null;
 
+        public List<DuplexChatReceive> Messages { get; set; } = new List<DuplexChatReceive>();
+
         void Start()
         {
             cellPoolList = new ObjectPoolList<UIChatCell>(cellPrefab);

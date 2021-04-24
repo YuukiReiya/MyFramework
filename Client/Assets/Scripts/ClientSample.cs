@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using Grpc.Core;
 using Server.gRPC;
@@ -22,6 +23,7 @@ namespace Sample
         Unary.UnaryClient unaryClient;
         BidirectionalStreaming.BidirectionalStreamingClient bidirectionalStreamingClient;
         SynchronizationContext context;
+        SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         Task duplexChatReciveTask = null;
         uint cnt = 0;
         public string IPAddress { get; set; } = "127.0.0.1";
@@ -90,17 +92,38 @@ namespace Sample
                     //受信
                     duplexChatReciveTask = Task.Run(async () =>
                     {
-                        while (await call.ResponseStream.MoveNext())
-                        {
-                            var current = call.ResponseStream.Current;
-                            Debug.Log($"Recive\n{current.UserID}:{current.Message}");
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                            while (await call.ResponseStream.MoveNext())
+                            {
+                                var current = call.ResponseStream.Current;
+                                Debug.Log($"Recive\n{current.UserID}:{current.Message}");
 
+                                // 新規のメッセージだけを選別してリストに追加する
+                                if (!chatWindow.Messages.Any(message => message.Hash == current.Hash))
+                                {
+                                    chatWindow.Messages.Add(current);
+                                    context.Post(_ =>
+                                    {
+                                        chatWindow.AddMessage(current);
+                                    }, null);
+                                }
+                            }
+                            await call.ResponseHeadersAsync;
+                        }
+                        catch (Exception e)
+                        {
                             context.Post(_ =>
                             {
-                                chatWindow.AddMessage(current);
+                                Debug.LogError("Receiveタスク例外:" + e.GetType() + "\n" + e.Message);
                             }, null);
+                            throw;
                         }
-                        await call.ResponseHeadersAsync;
+                        finally
+                        {
+                            semaphore.Release();
+                        }
                     });
 
                     //送信
@@ -125,6 +148,9 @@ namespace Sample
                 duplexChatReciveTask.Dispose();
                 Disconnect();
                 throw;
+            }
+            finally
+            {
             }
         }
 

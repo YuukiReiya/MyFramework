@@ -13,13 +13,9 @@ namespace Chat
     {
         public class Info
         {
-            public Info(int id, string message)
-            {
-                UserID = id;
-                Message = message;
-            }
-            public int UserID;
+            public uint UserID;
             public string Message;
+            public uint Hash;
         }
 
         public Queue<Info> Messages = new Queue<Info>((int)MessageCapacity);
