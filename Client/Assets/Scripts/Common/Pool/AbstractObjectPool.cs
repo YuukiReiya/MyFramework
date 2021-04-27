@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Common
 {
-    public class ObjectPoolList<T> where T : MonoBehaviour
+    public abstract class AbstractObjectPool<T, U> where T : MonoBehaviour where U : ICollection<T>, new() 
     {
-        public List<T> PoolList { get; private set; } = new List<T>();
+        public U PoolList { get; protected set; } = new U();
 
         /// <summary>
         /// オブジェクトプールからプール対象のオブジェクトを取得する条件
@@ -55,7 +55,7 @@ namespace Common
         /// <summary>
         /// 空コンストラクタ隠蔽
         /// </summary>
-        private ObjectPoolList() { }
+        protected AbstractObjectPool() { }
 
         /// <summary>
         /// 空コンストラクタ
@@ -63,7 +63,7 @@ namespace Common
         /// 生成方式:Instantiate
         /// 生成時の処理:gameObject.SetActive(true)
         /// </summary>
-        public ObjectPoolList(GameObject poolObject)
+        public  AbstractObjectPool(GameObject poolObject)
         {
             //取得条件
             IsGetPool = (instance) => { return !instance.gameObject.activeSelf; };
@@ -76,9 +76,9 @@ namespace Common
                 return instance;
             };
         }
-        public ObjectPoolList(T poolObject) : this(poolObject.gameObject) { }
+        public AbstractObjectPool(T poolObject) : this(poolObject.gameObject) { }
 
-        public ObjectPoolList(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+        public AbstractObjectPool(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
         {
             this.IsGetPool = isGetPool;
             this.CreateInstanceMethod = createInstanceMethod;
@@ -87,7 +87,7 @@ namespace Common
 
         public T Get()
         {
-            foreach(var current in PoolList)
+            foreach (var current in PoolList)
             {
                 if (IsGetPool(current))
                 {
@@ -103,6 +103,40 @@ namespace Common
             var newInstance = CreateInstanceMethod();
             CreateInstanceOption?.Invoke(newInstance);
             return newInstance;
+        }
+    }
+
+    /// <summary>
+    /// List型プール
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ObjectPoolList<T> : AbstractObjectPool<T, List<T>>
+        where T : MonoBehaviour
+    {
+        public ObjectPoolList(GameObject poolObject) : base(poolObject) { }
+        public ObjectPoolList(T poolTarget) : base(poolTarget) { }
+        public ObjectPoolList(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+        {
+            this.IsGetPool = isGetPool;
+            this.CreateInstanceMethod = createInstanceMethod;
+            this.CreateInstanceOption = createInstanceOption;
+        }
+    }
+
+    /// <summary>
+    /// LinkedList型プール
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ObjectPoolLinkedList<T> : AbstractObjectPool<T, LinkedList<T>>
+        where T : MonoBehaviour
+    {
+        public ObjectPoolLinkedList(GameObject poolObject) : base(poolObject) { }
+        public ObjectPoolLinkedList(T poolTarget) : base(poolTarget) { }
+        public ObjectPoolLinkedList(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+        {
+            this.IsGetPool = isGetPool;
+            this.CreateInstanceMethod = createInstanceMethod;
+            this.CreateInstanceOption = createInstanceOption;
         }
     }
 }
