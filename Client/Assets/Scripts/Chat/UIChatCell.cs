@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Server.gRPC;
 
 namespace uGUI.Chat
 {
@@ -12,12 +13,14 @@ namespace uGUI.Chat
         [SerializeField]
         private Text message;
 
-        RectTransform rectTransform = null;
+        public DuplexChatReceive Receive { get; private set; } = null;
+        private RectTransform rectTransform = null;
 
-        public void Setup(string userName,string message)
+        public void Setup(DuplexChatReceive receive)
         {
-            this.userName.text = userName;
-            this.message.text = message;
+            this.Receive = receive;
+            this.userName.text = receive.UserID.ToString();
+            this.message.text = $":{receive.Hash}:" + receive.Message;
             if (rectTransform == null)
             {
                 TryGetComponent(out rectTransform);

@@ -8,6 +8,7 @@ using Server.gRPC;
 using Grpc;
 using System.Threading;
 using System.Threading.Tasks;
+using Model.Chat;
 
 /*
  * Taskで実行した場合終了時にshutdownしないとEditor上でも動き続ける
@@ -17,12 +18,13 @@ namespace Sample
 {
     public class ClientSample : MonoBehaviour
     {
+        public static ClientSample Instance = new ClientSample();
         [SerializeField] uGUI.Chat.UIChatWindow chatWindow;
         Action S2C_Recive = null;
         Channel channel;
         Unary.UnaryClient unaryClient;
         BidirectionalStreaming.BidirectionalStreamingClient bidirectionalStreamingClient;
-        SynchronizationContext context;
+        public static SynchronizationContext context;
         SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         Task duplexChatReciveTask = null;
         uint cnt = 0;
@@ -47,6 +49,7 @@ namespace Sample
                 cnt++;
                 DuplexChatSend request = new DuplexChatSend { UserID = 0, Message = $"Count={cnt}" };
                 ChatRequests.Add(request);
+                ChatModel.Instance.AddRequestSendMessage(request);
             }
         }
 
@@ -98,17 +101,24 @@ namespace Sample
                             while (await call.ResponseStream.MoveNext())
                             {
                                 var current = call.ResponseStream.Current;
-                                Debug.Log($"Recive\n{current.UserID}:{current.Message}");
 
-                                // 新規のメッセージだけを選別してリストに追加する
-                                if (!chatWindow.Messages.Any(message => message.Hash == current.Hash))
+                                context.Post(_ =>
                                 {
-                                    chatWindow.Messages.Add(current);
+                                    ChatModel.Instance.S2C_Receive_Duplex_Chat(current);
+                                }, null);
+                                #region MVCクラス無し版
+#if false
+                                // 新規のメッセージだけを選別してリストに追加する
+                                if (!ChatModel.Instance.Messages.Any(message => message.Hash == current.Hash))
+                                {
+                                    ChatModel.Instance.Messages.Add(current);
                                     context.Post(_ =>
                                     {
-                                        chatWindow.AddMessage(current);
+                                        chatWindow.OnReceiveChat(current);
                                     }, null);
                                 }
+#endif
+                                #endregion
                             }
                             await call.ResponseHeadersAsync;
                         }
@@ -127,18 +137,23 @@ namespace Sample
                     });
 
                     //送信
-                    int i = 0;
-                    while (i < ChatRequests.Count)
-                    {
-                        var request = ChatRequests[i];
-                        Debug.Log($"Send\n{request.UserID}:{request.Message}");
+                    #region 直書き
+#if false
+                    //int i = 0;
+                    //while (i < ChatRequests.Count)
+                    //{
+                    //    var request = ChatRequests[i];
+                    //    //Debug.Log($"Send\n{request.UserID}:{request.Message}");
 
-                        await call.RequestStream.WriteAsync(request);
-                        i++;
-                    }
-                    ChatRequests.Clear();
+                    //    await call.RequestStream.WriteAsync(request);
+                    //    i++;
+                    //}
+                    //ChatRequests.Clear();
                     await call.RequestStream.CompleteAsync();
                     await duplexChatReciveTask;
+#endif
+                    #endregion
+                    await ChatModel.Instance.C2S_Send_Duplex_Chat(call, duplexChatReciveTask);
                 }
 
             }
