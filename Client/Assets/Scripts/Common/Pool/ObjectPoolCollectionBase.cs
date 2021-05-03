@@ -10,7 +10,7 @@ namespace Common
     /// </summary>
     /// <typeparam name="T">プール対象</typeparam>
     /// <typeparam name="U">コレクション型</typeparam>
-    public abstract class ObjectPoolCollectionBase<T, U> where T : MonoBehaviour where U : System.Collections.ICollection,IEnumerable<T>, new()
+    public abstract class ObjectPoolCollectionBase<T, U> where T : MonoBehaviour where U : System.Collections.ICollection, IEnumerable<T>, new()
     {
         public U Pool { get; protected set; } = new U();
 
@@ -18,6 +18,12 @@ namespace Common
         /// オブジェクトプールからプール対象のオブジェクトを取得する条件
         /// </summary>
         public delegate bool ConditionToGetFromPool(T instance);
+
+        /// <summary>
+        /// オブジェクトプールから取得する際のオプション
+        /// </summary>
+        /// <param name="instance"></param>
+        public delegate void GetPoolOption(T instance);
 
         /// <summary>
         /// インスタンスの作り方
@@ -36,6 +42,11 @@ namespace Common
         /// 指定しなければ'!activeSelf'(非活性オブジェクト)
         /// </summary>
         public ConditionToGetFromPool IsGetPool = null;
+
+        /// <summary>
+        /// プールから取得する際に呼ばれるメソッド
+        /// </summary>
+        public GetPoolOption GetPoolMethod = null;
 
         /// <summary>
         /// インスタンス生成時の作成方法
@@ -72,6 +83,8 @@ namespace Common
         {
             //取得条件
             IsGetPool = (instance) => { return !instance.gameObject.activeSelf; };
+            //取得時に呼ぶ処理
+            GetPoolMethod = (instance) => { if (!instance.gameObject.activeSelf) instance.gameObject.SetActive(true); };
             //生成方法
             CreateInstanceMethod = () => { return GameObject.Instantiate(poolObject).GetComponent<T>(); };
             //生成時オプション
@@ -84,9 +97,10 @@ namespace Common
 
         public ObjectPoolCollectionBase(T poolObject) : this(poolObject.gameObject) { }
 
-        public ObjectPoolCollectionBase(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+        public ObjectPoolCollectionBase(GameObject poolObject, ConditionToGetFromPool isGetPool, GetPoolOption getPoolMethod, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
         {
             this.IsGetPool = isGetPool;
+            this.GetPoolMethod = getPoolMethod;
             this.CreateInstanceMethod = createInstanceMethod;
             this.CreateInstanceOption = createInstanceOption;
         }
@@ -97,11 +111,11 @@ namespace Common
             {
                 if (IsGetPool(current))
                 {
+                    GetPoolMethod?.Invoke(current);
                     return current;
                 }
             }
             var newInstance = Create();
-            //PoolList.Add(newInstance);
             Add(Pool, newInstance);
             return newInstance;
         }
@@ -113,24 +127,24 @@ namespace Common
             return newInstance;
         }
 
-        protected abstract void Add(U collection,T element);
+        protected abstract void Add(U collection, T element);
     }
 
     /// <summary>
     /// リスト
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ObjectPoolList<T> : ObjectPoolCollectionBase<T, List<T>> 
-        where T:MonoBehaviour
+    public class ObjectPoolList<T> : ObjectPoolCollectionBase<T, List<T>>
+        where T : MonoBehaviour
     {
+
         public ObjectPoolList(GameObject poolObject) : base(poolObject) { }
+
         public ObjectPoolList(T target) : base(target) { }
-        public ObjectPoolList(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
-        {
-            this.IsGetPool = isGetPool;
-            this.CreateInstanceMethod = createInstanceMethod;
-            this.CreateInstanceOption = createInstanceOption;
-        }
+
+        public ObjectPoolList(GameObject poolObject, ConditionToGetFromPool isGetPool, GetPoolOption getPoolMethod, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+            : base(poolObject, isGetPool, getPoolMethod, createInstanceMethod, createInstanceOption) { }
+
         protected override void Add(List<T> collection, T element) { collection.Add(element); }
     }
 
@@ -141,14 +155,14 @@ namespace Common
     public class ObjectPoolLinkedList<T> : ObjectPoolCollectionBase<T, LinkedList<T>>
         where T : MonoBehaviour
     {
+
         public ObjectPoolLinkedList(GameObject poolObject) : base(poolObject) { }
+
         public ObjectPoolLinkedList(T target) : base(target) { }
-        public ObjectPoolLinkedList(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
-        {
-            this.IsGetPool = isGetPool;
-            this.CreateInstanceMethod = createInstanceMethod;
-            this.CreateInstanceOption = createInstanceOption;
-        }
+
+        public ObjectPoolLinkedList(GameObject poolObject, ConditionToGetFromPool isGetPool, GetPoolOption getPoolMethod, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+            : base(poolObject, isGetPool, getPoolMethod, createInstanceMethod, createInstanceOption) { }
+
         protected override void Add(LinkedList<T> collection, T element) { collection.AddLast(element); }
     }
 
@@ -159,14 +173,14 @@ namespace Common
     public class ObjectPoolQueue<T> : ObjectPoolCollectionBase<T, Queue<T>>
         where T : MonoBehaviour
     {
+
         public ObjectPoolQueue(GameObject poolObject) : base(poolObject) { }
+
         public ObjectPoolQueue(T target) : base(target) { }
-        public ObjectPoolQueue(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
-        {
-            this.IsGetPool = isGetPool;
-            this.CreateInstanceMethod = createInstanceMethod;
-            this.CreateInstanceOption = createInstanceOption;
-        }
+
+        public ObjectPoolQueue(GameObject poolObject, ConditionToGetFromPool isGetPool, GetPoolOption getPoolMethod, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+            : base(poolObject, isGetPool, getPoolMethod, createInstanceMethod, createInstanceOption) { }
+
         protected override void Add(Queue<T> collection, T element) { collection.Enqueue(element); }
     }
 
@@ -174,20 +188,16 @@ namespace Common
     /// スタック
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ObjectPoolStack<T>:ObjectPoolCollectionBase<T,Stack<T>>
-        where T:MonoBehaviour
+    public class ObjectPoolStack<T> : ObjectPoolCollectionBase<T, Stack<T>>
+        where T : MonoBehaviour
     {
 
         public ObjectPoolStack(GameObject poolObject) : base(poolObject) { }
 
         public ObjectPoolStack(T target) : base(target) { }
 
-        public ObjectPoolStack(GameObject poolObject, ConditionToGetFromPool isGetPool, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
-        {
-            this.IsGetPool = isGetPool;
-            this.CreateInstanceMethod = createInstanceMethod;
-            this.CreateInstanceOption = createInstanceOption;
-        }
+        public ObjectPoolStack(GameObject poolObject, ConditionToGetFromPool isGetPool, GetPoolOption getPoolMethod, InstantiateMethod createInstanceMethod, InstantiateOption createInstanceOption)
+            : base(poolObject, isGetPool, getPoolMethod, createInstanceMethod, createInstanceOption) { }
 
         protected override void Add(Stack<T> collection, T element) { collection.Push(element); }
     }
