@@ -1,4 +1,4 @@
-﻿//Githubに挙げる際に後々必要になりそうな名前のフォルダを空で用意しておきたい。
+﻿﻿//Githubに挙げる際に後々必要になりそうな名前のフォルダを空で用意しておきたい。
 //参考:https://qiita.com/tsujihaneta/items/0096ed9f8f0621d1ccbd
 //※多分コピペしただけだと問題ありそうなのでリファクタリングは必須。
 //　そのうえで必要があれば改良する。
@@ -10,50 +10,19 @@ using UnityEditor;
 
 namespace Editor.Expansion
 {
-    // エディター拡張なのでエディター限定
-#if UNITY_EDITOR
-    [InitializeOnLoad]
-    public class FolderKeep : AssetPostprocessor
+    public class FolderKeep : IAssetAllPostprocess
     {
-        private static FolderKeep instance = null;
-        private static FolderKeep Instance
-        {
-            get => instance = (instance == null) ? new FolderKeep() : instance;
-        }
-        //private static FolderKeep Instance { get; } = new FolderKeep();
-
-
         /// <summary>
         /// 空フォルダのために作るファイル
         /// NOTE:
         /// 「.gitkeep」という名前のダミーファイルが一般的らしい。
         /// </summary>
-        public const string DummyFileName = ".gitkeep";
+        private const string DummyFileName = ".gitkeep";
+        private const string RootDirectoryName = "Assets";
 
-        /// <summary>
-        /// コンストラクタ
-        /// memo.
-        /// InitializeOnLoadアトリビュートで起動時に呼び出されるらしい。
-        /// </summary>
-        static FolderKeep() { Instance.Execute(); }
-
-        /// <summary>
-        /// アセット更新時に呼ばれる
-        /// </summary>
-        /// <param name="importedAssets"></param>
-        /// <param name="deletedAssets"></param>
-        /// <param name="movedAssets"></param>
-        /// <param name="movedFromAssetPaths"></param>
-        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        void IAssetAllPostprocess.Execute()
         {
-            Instance.Execute();
-        }
-
-        private void Execute()
-        {
-            var assetsRoot = "Assets";
-            Instance.Create(assetsRoot);
-            AssetDatabase.Refresh();
+            Create(RootDirectoryName);
         }
 
         /// <summary>
@@ -109,5 +78,4 @@ namespace Editor.Expansion
             }
         }
     }
-#endif
 }
