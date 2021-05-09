@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Build;
@@ -13,6 +13,7 @@ using UnityEditor.VersionControl;
 //ビルドイベント
 namespace API.Process
 {
+#if UNITY_EDITOR
     public class ProcessBuilder : IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
         private const string BatFolderName = "BuildEvent";
@@ -116,4 +117,5 @@ namespace API.Process
             }
         }
     }
+#endif
 }
