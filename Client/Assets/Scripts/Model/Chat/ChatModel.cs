@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections;
@@ -13,34 +13,34 @@ namespace Model.Chat
     public class ChatModel : ModelBase<ChatModel>
     {
         /// <summary>
-        /// ‘—M‚·‚éƒ`ƒƒƒbƒgî•ñ‚Ì‹l‚Ü‚Á‚½ƒŠƒNƒGƒXƒgƒLƒ…[
+        /// é€ä¿¡ã™ã‚‹ãƒãƒ£ãƒƒãƒˆæƒ…å ±ã®è©°ã¾ã£ãŸãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚­ãƒ¥ãƒ¼
         /// </summary>
         private Queue<DuplexChatSend> RequestSendMessageQueue = new Queue<DuplexChatSend>();
 
         /// <summary>
-        /// ó‚¯æ‚Á‚½ƒ`ƒƒƒbƒgî•ñ
+        /// å—ã‘å–ã£ãŸãƒãƒ£ãƒƒãƒˆæƒ…å ±
         /// </summary>
         public List<DuplexChatReceive> ReceivedMessages = new List<DuplexChatReceive>();
 
         /// <summary>
-        /// ƒƒbƒZ[ƒW•\¦‚Ì‹–—e”
+        /// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã®è¨±å®¹æ•°
         /// </summary>
         public uint MessageCapacity { get; private set; } = 5;
 
         /// <summary>
-        /// ƒ`ƒƒƒbƒgƒƒbƒZ[ƒW‚ÌƒŠƒNƒGƒXƒg‚És‚¤ƒR[ƒ‹ƒoƒbƒN
-        /// ¦‘—M‚Í•ÊƒXƒŒƒbƒh‚Ås‚í‚êAUnityAPI‚ªg‚¦‚È‚¢‚Ì‚ÅƒR[ƒ‹ƒoƒbƒN‚Ìƒ^ƒCƒ~ƒ“ƒO‚ÍƒŠƒNƒGƒXƒg‚É‚µ‚Ä‚éB
+        /// ãƒãƒ£ãƒƒãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ™‚ã«è¡Œã†ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
+        /// â€»é€ä¿¡ã¯åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰ã§è¡Œã‚ã‚Œã€UnityAPIãŒä½¿ãˆãªã„ã®ã§ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã¯ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ™‚ã«ã—ã¦ã‚‹ã€‚
         /// </summary>
         public event Action<DuplexChatSend> OnRequestChatMessage = null;
 
         /// <summary>
-        /// ƒ`ƒƒƒbƒgóM‚És‚¤ƒR[ƒ‹ƒoƒbƒN
+        /// ãƒãƒ£ãƒƒãƒˆå—ä¿¡æ™‚ã«è¡Œã†ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
         /// </summary>
         public event Action<DuplexChatReceive> OnReciveChatMessage = null;
 
         /// <summary>
-        /// ‘o•ûŒüƒXƒgƒŠ[ƒ~ƒ“ƒO
-        /// CL ¨ SVƒ`ƒƒƒbƒgƒƒbƒZ[ƒW‘—Mˆ—
+        /// åŒæ–¹å‘ã‚¹ãƒˆãƒªãƒ¼ãƒŸãƒ³ã‚°
+        /// CL â†’ SVãƒãƒ£ãƒƒãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡å‡¦ç†
         /// >>> S2C_Receive_Duplex_Chat
         /// </summary>
         /// <param name="receive"></param>
@@ -49,17 +49,17 @@ namespace Model.Chat
         {
             try
             {
-                // ƒŠƒNƒGƒXƒg‚Ì‘‚«‚İ
+                // ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®æ›¸ãè¾¼ã¿
                 foreach (var request in RequestSendMessageQueue)
                 {
                     await call.RequestStream.WriteAsync(request);
                 }
                 RequestSendMessageQueue.Clear();
 
-                // ‘‚«‚İI‚í‚é‚Ü‚Å‘Ò‚Â
+                // æ›¸ãè¾¼ã¿çµ‚ã‚ã‚‹ã¾ã§å¾…ã¤
                 await call.RequestStream.CompleteAsync();
 
-                // óMˆ—‚ªI‚í‚é‚Ü‚Å‘Ò‚Â
+                // å—ä¿¡å‡¦ç†ãŒçµ‚ã‚ã‚‹ã¾ã§å¾…ã¤
                 await receiveTask;
             }
             catch (Exception e)
@@ -73,29 +73,29 @@ namespace Model.Chat
         }
 
         /// <summary>
-        /// ‘o•ûŒüƒXƒgƒŠ[ƒ~ƒ“ƒO
-        /// SV ¨ CLƒ`ƒƒƒbƒgƒƒbƒZ[ƒWóMˆ—
+        /// åŒæ–¹å‘ã‚¹ãƒˆãƒªãƒ¼ãƒŸãƒ³ã‚°
+        /// SV â†’ CLãƒãƒ£ãƒƒãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å—ä¿¡å‡¦ç†
         /// >>> C2S_Send_Duplex_Chat
         /// </summary>
         /// <param name="receive"></param>
         public void S2C_Receive_Duplex_Chat(DuplexChatReceive receive)
         {
-            // “¯‚¶ƒf[ƒ^‚ªd•¡‚µ‚Ä“o˜^‚³‚ê‚é‚±‚Æ‚ğ–h‚®‚½‚ß‚É‘I•Ê
+            // åŒã˜ãƒ‡ãƒ¼ã‚¿ãŒé‡è¤‡ã—ã¦ç™»éŒ²ã•ã‚Œã‚‹ã“ã¨ã‚’é˜²ããŸã‚ã«é¸åˆ¥
             if (!ReceivedMessages.Any(_ => _.Hash == receive.Hash))
             {
-                // ó‚¯æ‚èˆ—
+                // å—ã‘å–ã‚Šå‡¦ç†
                 OnReciveChatMessage?.Invoke(receive);
                 ReceivedMessages.Add(receive);
             }
         }
 
         /// <summary>
-        /// ‘—MƒƒbƒZ[ƒW‚ÌƒŠƒNƒGƒXƒg
+        /// é€ä¿¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
         /// </summary>
         /// <param name="request"></param>
         public void AddRequestSendMessage(DuplexChatSend request)
         {
-            // ƒŠƒNƒGƒXƒgˆ—
+            // ãƒªã‚¯ã‚¨ã‚¹ãƒˆå‡¦ç†
             OnRequestChatMessage?.Invoke(request);
             RequestSendMessageQueue.Enqueue(request);
         }
