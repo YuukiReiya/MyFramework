@@ -19,7 +19,7 @@ namespace Editor.Expansion
         /// </summary>
         private static IAssetPostprocess[] ImportPostprocesses =
         {
-            new ScriptEncoder(),
+            //new ScriptEncoder(),
         };
 
         /// <summary>
