@@ -18,7 +18,7 @@ namespace Sample
 {
     public class ClientSample : MonoBehaviour
     {
-        public static ClientSample Instance = new ClientSample();
+        public static ClientSample Instance = null;
         [SerializeField] uGUI.Chat.UIChatWindow chatWindow;
         Action S2C_Recive = null;
         Channel channel;
@@ -34,6 +34,7 @@ namespace Sample
         // Start is called before the first frame update
         void Start()
         {
+            Instance = this;
             context = SynchronizationContext.Current;
             Connect();
         }

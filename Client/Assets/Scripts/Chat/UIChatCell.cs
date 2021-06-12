@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Server.gRPC;
 
 namespace uGUI.Chat
 {
-    public class UIChatCell : MonoBehaviour
+    public class UIChatCell : UIBehaviour, IScrollElement<DuplexChatReceive>
     {
         [SerializeField]
         private Text userName;
