@@ -14,7 +14,7 @@ namespace Helper
 
         public static void CallMethod<T>(T instance, string methodName, BindingFlags bindFlag, params object[] arguments)
         {
-            var method = typeof(T).GetMethod(methodName, c_InstanceMethodBindingFlag,
+            var method = typeof(T).GetMethod(methodName, bindFlag,
                 null,
                 arguments.Select(_ => _.GetType()).ToArray(),
                 null);

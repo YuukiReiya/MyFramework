@@ -198,10 +198,10 @@ public class TweenTransformInspecter : Editor
     {
         serializedObject.Update();
         DrawAnimationCurve();
+        DrawRebootButton();
         DrawSyncCurrentTransform();
         DrawVector3Property();
         DrawCurrentTransformButton();
-        DrawRebootButton();
         serializedObject.ApplyModifiedProperties();
     }
 
