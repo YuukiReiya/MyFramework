@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Expansion;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.Assertions;
@@ -52,6 +54,8 @@ public class TweenTransform : MonoBehaviour
             return isClamp;
         }
     }
+
+    bool IsRectTransform=> gameObject.transform is RectTransform;
     IEnumerator routine = null;
 
 #if UNITY_EDITOR
@@ -82,6 +86,15 @@ public class TweenTransform : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (routine != null)
+        {
+            StopCoroutine(routine);
+            routine = null;
+        }
+    }
+
     IEnumerator Routine()
     {
         while (true)
@@ -96,6 +109,25 @@ public class TweenTransform : MonoBehaviour
             var value = m_elapsedTime / m_animationTime;
             var evalueate = m_curve.Evaluate(value);
 
+            var pos = GetTweenVector3(m_fromPosition, m_toPosition, evalueate);
+            var rotate = GetTweenVector3(m_fromRotation, m_toRotation, evalueate);
+            var scale = GetTweenVector3(m_fromScale, m_toScale, evalueate);
+
+            if (IsRectTransform)
+            {
+                var rect = gameObject.transform as RectTransform;
+                // アンカーを考慮する
+                rect.anchoredPosition3D = GetTweenVector3(m_fromPosition, m_toPosition, evalueate);
+            }
+            else
+            {
+                this.gameObject.transform.localPosition = pos;
+            }
+            // ローカル系
+            this.gameObject.transform.localRotation = Quaternion.Euler(rotate);
+            this.gameObject.transform.localScale = scale;
+            yield return null;
+            m_elapsedTime += Time.deltaTime;
             if (m_elapsedTime >= AnimationTime)
             {
                 if (IsClampAnimationCurve)
@@ -107,17 +139,6 @@ public class TweenTransform : MonoBehaviour
                     m_elapsedTime = 0;
                 }
             }
-
-            var pos = GetTweenVector3(m_fromPosition, m_toPosition, evalueate);
-            var rotate = GetTweenVector3(m_fromRotation, m_toRotation, evalueate);
-            var scale = GetTweenVector3(m_fromScale, m_toScale, evalueate);
-
-            // ローカル系
-            this.gameObject.transform.localPosition = pos;
-            this.gameObject.transform.localRotation = Quaternion.Euler(rotate);
-            this.gameObject.transform.localScale = scale;
-            yield return null;
-            m_elapsedTime += Time.deltaTime;
         }
     }
 
@@ -180,12 +201,13 @@ public class TweenTransformInspecter : Editor
         DrawSyncCurrentTransform();
         DrawVector3Property();
         DrawCurrentTransformButton();
+        DrawRebootButton();
         serializedObject.ApplyModifiedProperties();
     }
 
     private void OnValidate()
     {
-        
+
     }
 
     void DrawAnimationCurve()
@@ -243,7 +265,7 @@ public class TweenTransformInspecter : Editor
     }
 
     void DrawCurrentTransformButton()
-    {  
+    {
         if (GUILayout.Button($"遷移元を現在のローカル系に設定する."))
         {
             SyncLocalTransformForCurrentLocalTransform();
@@ -256,6 +278,37 @@ public class TweenTransformInspecter : Editor
         fromPositionProp.vector3Value = obj.transform.localPosition;
         fromRotationProp.vector3Value = obj.transform.localRotation.eulerAngles;
         fromScaleProp.vector3Value = obj.transform.localScale;
+    }
+
+    void DrawRebootButton()
+    {
+        // 実行中でなければ描画しない.
+        if (!EditorApplication.isPlaying) return;
+
+        if (GUILayout.Button($"Reboot:再起動"))
+        {
+            RebootRoutine();
+        }
+
+        void RebootRoutine()
+        {
+            var routine = Helper.ScriptableHelper.GetMethod<TweenTransform>("Routine");
+            var method = Helper.ScriptableHelper.GetMethod<MonoBehaviour>("StartCoroutine", new[] { routine.ReturnType });
+            var info = Helper.ScriptableHelper.GetField<TweenTransform>("routine");
+            var value = info.GetValue(target);
+            // コルーチンが動いてたら止めてから開始しなおす.
+            if (value != null)
+            {
+                var stopMethod = Helper.ScriptableHelper.GetMethod<MonoBehaviour>("StopCoroutine", new[] { typeof(IEnumerator) });
+                stopMethod.Invoke(target, new[] { value as IEnumerator });
+                info.SetValue(target, null);
+            }
+
+            // コルーチンを登録しなおす.
+            value = routine.Invoke(target, null);
+            info.SetValue(target, value);
+            method.Invoke(target, new[] { value });
+        }
     }
 }
 #endif
