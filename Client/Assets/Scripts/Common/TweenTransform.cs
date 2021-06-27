@@ -257,7 +257,6 @@ public class TweenTransformInspecter : Editor
             isSyncLocalTransform = GUILayout.Toggle(isSyncLocalTransform, $"");
             if (isSyncLocalTransform)
             {
-                Debug.Log("同期");
                 SyncLocalTransformForCurrentLocalTransform();
             }
         }
@@ -275,9 +274,21 @@ public class TweenTransformInspecter : Editor
     void SyncLocalTransformForCurrentLocalTransform()
     {
         var obj = (target as TweenTransform).gameObject;
-        fromPositionProp.vector3Value = obj.transform.localPosition;
-        fromRotationProp.vector3Value = obj.transform.localRotation.eulerAngles;
-        fromScaleProp.vector3Value = obj.transform.localScale;
+        var isRectTransform = (bool)Helper.ScriptableHelper.GetProperty<TweenTransform>("IsRectTransform").GetValue(target);
+        
+        if (isRectTransform)
+        {
+            var rect = obj.transform as RectTransform;
+            fromPositionProp.vector3Value = rect.anchoredPosition3D;
+            fromRotationProp.vector3Value = obj.transform.localRotation.eulerAngles;
+            fromScaleProp.vector3Value = obj.transform.localScale;
+        }
+        else
+        {
+            fromPositionProp.vector3Value = obj.transform.localPosition;
+            fromRotationProp.vector3Value = obj.transform.localRotation.eulerAngles;
+            fromScaleProp.vector3Value = obj.transform.localScale;
+        }
     }
 
     void DrawRebootButton()
