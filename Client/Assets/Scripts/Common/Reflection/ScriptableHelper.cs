@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Expansion;
@@ -14,6 +15,8 @@ namespace Helper
         public const BindingFlags c_StaticFieldBindingFlag = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.GetField | BindingFlags.SetField | BindingFlags.Public | BindingFlags.NonPublic;
         public const BindingFlags c_InstancePropertyBindingFlag = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
         public const BindingFlags c_StaticPropertyBindingFlag = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+        public const BindingFlags c_EnumBindingFlag = BindingFlags.DeclaredOnly | BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        private static readonly BindingFlags c_AllMask = (BindingFlags)((1 << Enum.GetNames(typeof(BindingFlags)).Length) - 1);
 
         public static void CallMethod<T>(T instance, string methodName, BindingFlags bindFlag, params object[] arguments)
         {
@@ -129,5 +132,44 @@ namespace Helper
         public static PropertyInfo GetProperty<T>(string propertyName) => GetProperty<T>(propertyName, c_InstancePropertyBindingFlag);
 
         public static PropertyInfo GetStaticProperty<T>(string propertyName) => GetProperty<T>(propertyName, c_StaticPropertyBindingFlag);
+
+        // 列挙体.
+        // HACK.Enum.GetNamesで取得した値に対してEnum.Parseすればいいことに気づいた。いらないかも。
+        public static IEnumerable<MemberInfo> GetEnumMembers<T>(BindingFlags bindFlag)
+        {
+            var type = typeof(T);
+            if (!type.IsEnum)
+            {
+                Debug.LogError($"{type.Name} is not enum.");
+                return null;
+            }
+            var members = GetMembers<T>(bindFlag);
+            if (members == null)
+            {
+                return null;
+            }
+            return members.Where(m => Enum.GetNames(typeof(T)).Contains(m.Name)).DefaultIfEmpty().ToArray();
+        }
+
+        public static IEnumerable<MemberInfo> GetEnumMembers<T>() => GetEnumMembers<T>(c_EnumBindingFlag);
+
+        public static IEnumerable<MemberInfo> GetMembers<T>(BindingFlags bindFlag)
+        {
+            var members = typeof(T).GetMembers(bindFlag);
+            if (members == null)
+            {
+                Debug.LogError($"{typeof(T).Name} is not found members.");
+            }
+            return members;
+        }
+        public static IEnumerable<MemberInfo> GetMembers<T>()
+        {
+            var members = typeof(T).GetMembers();
+            if (members == null)
+            {
+                Debug.LogError($"{typeof(T).Name} is not found members.");
+            }
+            return members;
+        }
     }
 }
