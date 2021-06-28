@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Model.Input;
 
 namespace uGUI.ADV
 {
@@ -66,9 +67,9 @@ namespace uGUI.ADV
         }
 
         // テキスト送り.
-        bool IsInputNextText => Input.GetKeyDown(KeyCode.Return);
+        bool IsInputNextText => InputModel.Instance.GetButtonDown("Return");
         // 現在のテキスト一括表示.
-        bool IsInputDisplayAllText => Input.GetKeyDown(KeyCode.Return);
+        bool IsInputDisplayAllText => InputModel.Instance.GetButtonDown("Return");
 
         // Start is called before the first frame update
         void Start()
