@@ -81,7 +81,7 @@ namespace Model.Chat
         public void S2C_Receive_Duplex_Chat(DuplexChatReceive receive)
         {
             // 同じデータが重複して登録されることを防ぐために選別
-            if (!ReceivedMessages.Any(_ => _.Hash == receive.Hash))
+            if (!ReceivedMessages.Any(registered => registered.Hash == receive.Hash))
             {
                 // 受け取り処理
                 OnReciveChatMessage?.Invoke(receive);

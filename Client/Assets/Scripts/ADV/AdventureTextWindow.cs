@@ -75,7 +75,7 @@ namespace uGUI.ADV
         void Start()
         {
             var list = new List<AdventureTextData>();
-            testData.ForEach(_ => list.Add(new AdventureTextData { Text = _, ID = 0, ActorName = "tester" })) ;
+            testData.ForEach(data => list.Add(new AdventureTextData { Text = data, ID = 0, ActorName = "tester" })) ;
             Setup(list);
             SetNextText();
             m_message.text = string.Empty;
