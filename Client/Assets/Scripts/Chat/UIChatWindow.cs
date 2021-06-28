@@ -40,18 +40,18 @@ namespace uGUI.Chat
         public void OnReceiveChat(DuplexChatReceive receive)
         {
             // 許容数を超えたら古いものからプールに帰し再利用する
-            if (cellPoolList.Pool.Count(_ => !cellPoolList.IsGetPool(_)/* プール判定条件の偽 */) > ChatModel.Instance.MessageCapacity)
+            if (cellPoolList.Pool.Count(cell => !cellPoolList.IsGetPool(cell)/* プール判定条件の偽 */) > ChatModel.Instance.MessageCapacity)
             {
                 var target = cellPoolList.Pool.
-                    Where(_ => !cellPoolList.IsGetPool(_)).//プール対象じゃない ＝ 現在利用中
-                    OrderBy(_ => _.Receive.Hash).             //追加順
+                    Where(cell => !cellPoolList.IsGetPool(cell)).//プール対象じゃない ＝ 現在利用中
+                    OrderBy(cell => cell.Receive.Hash).             //追加順
                     FirstOrDefault();                                     //最初の要素
 
                 // プールに戻す
                 RecycleCell(target);
             }
-            var cell = cellPoolList.Get();
-            cell.Setup(receive);
+            var instance = cellPoolList.Get();
+            instance.Setup(receive);
         }
 
         private void RecycleCell(UIChatCell recycleCell)

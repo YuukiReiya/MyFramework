@@ -22,7 +22,7 @@ namespace Helper
         {
             var method = typeof(T).GetMethod(methodName, bindFlag,
                 null,
-                arguments.Select(_ => _.GetType()).ToArray(),
+                arguments.Select(arg => arg.GetType()).ToArray(),
                 null);
             if (method == null)
             {
@@ -57,7 +57,7 @@ namespace Helper
 
         public static void CallStaticMethod<T>(string methodName, params object[] arguments)
         {
-            var method = typeof(T).GetMethod(methodName, c_StaticMethodBindingFlag, null, arguments.Select(_ => _.GetType()).ToArray(), null);
+            var method = typeof(T).GetMethod(methodName, c_StaticMethodBindingFlag, null, arguments.Select(arg => arg.GetType()).ToArray(), null);
             if (method == null)
             {
                 Debug.LogError($"Not found method. : \"{typeof(T)}.{methodName}\"({string.Join(",", arguments)})");
