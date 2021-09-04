@@ -188,6 +188,7 @@ namespace Model
             return Result.Success;
         }
 
+        // memo. ゴミ箱の中に入っていても判定するっぽい
         public bool IsExist(string driveFilePath)
         {
             if (_Service == null)
@@ -201,29 +202,27 @@ namespace Model
             //filesListRequest.Fields = "nextPageToken, files(id, name, createdTime, mimeType)";
             filesListRequest.Fields = "files(id, name)";
 
-            
-
             var files = filesListRequest.Execute().Files;
 
             if (files != null && files.Any())
             {
                 try
                 {
-                    foreach (var f in files)
-                    {
-                        var ps = f.Parents != null ? string.Join(",", f.Parents) : "null";
-                        Console.WriteLine($"{f.Name} : {ps}");
-                        return false;
-                    }
+                    // 一旦コメントアウト
+                    //foreach (var f in files)
+                    //{
+                    //    var ps = f.Parents != null ? string.Join(",", f.Parents) : "null";
+                    //    Console.WriteLine($"{f.Name} : {ps}");
+                    //    return false;
+                    //}
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"エラー:{e.Message}");
+                    Console.WriteLine($"{e.GetType().Name}:{e.Message}");
                     Console.WriteLine("failed.");
                   
                     throw;
                 }
-
 
                 return files.Any(file => file.Name == driveFilePath);
             }
@@ -231,10 +230,61 @@ namespace Model
             return false;
         }
 
+        public void ShowUploadedList()
+        {
+            if (_Service == null)
+            {
+                Console.WriteLine($"Not initialized.");
+                return ;
+            }
+            var filesListRequest = _Service.Files.List();
+            filesListRequest.PageSize = _PageSize;
+            // name:拡張子まで
+            //filesListRequest.Fields = "nextPageToken, files(id, name, createdTime, mimeType)";
+            filesListRequest.Fields = "files(id, name, parents)";
+
+            var files = filesListRequest.Execute().Files;
+
+            if (files != null && files.Any())
+            {
+                try
+                {
+                    List<string> list = new List<string>();
+                    foreach (var f in files)
+                    {
+                        //Console.WriteLine($"ID:{f.Id},Name:{f.Name},Parent{string.Join("_", f.Parents.SelectMany(_ => _))}");
+                        var parentName = f.Parents != null ? string.Join("", f.Parents.SelectMany(p => p)) : "null";
+                        //Console.WriteLine($"ID:{f.Id}{Environment.NewLine}Name:{f.Name}{Environment.NewLine},Parent:{parentName}{Environment.NewLine}");
+
+                        // 出力情報をパスに変換する (parentにはidが入るので変換)
+                        var parentId = f.Parents != null ? string.Join("", f.Parents.SelectMany(p => p)) : string.Empty;
+                        var path = f.Name;
+
+                        while (!string.IsNullOrEmpty(parentId))
+                        {
+                            var parentFile = files.Where(x => x != null).FirstOrDefault(y => y.Id == parentId);
+                            if (parentFile == null) break;
+                            path = string.Concat(parentFile.Name + "/", path);
+                            parentId = parentFile.Parents != null ? string.Join("", parentFile.Parents.SelectMany(p => p)) : string.Empty;
+                        }
+                        list.Add(path);
+                    }
+                    foreach(var path in list.OrderBy(p => p)) Console.WriteLine($"{path}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"{e.GetType().Name}:{Environment.NewLine}{e.Message}");
+                    throw;
+                }
+            }
+        }
+
         /// <summary>
         /// 参考:https://stackoverflow.com/questions/46515805/file-upload-or-folder-creation-using-google-drive-api-v3-c-sharp
+        /// memo.
+        /// 同じ名前のファイルも複数挙げられてしまうみたいなので重複名でアップロードされないよう呼び出し先で管理推奨.
         /// </summary>
-        private void Upload(string path,string parentFolderName)
+        public void Upload(string path,string parentFolderName)
         {
             var io = new Google.Apis.Drive.v3.Data.File();
 
@@ -272,10 +322,6 @@ namespace Model
                 do { } while (progress.Status == Google.Apis.Upload.UploadStatus.Uploading);
 
                 Console.WriteLine($"upload state:{progress.Status}");
-
-                // 中身の確認
-                var data = request.ResponseBody;
-                Console.WriteLine($"{data.Id},{data.Name},{data.FileExtension}");
             }
         }
 
