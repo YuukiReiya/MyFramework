@@ -5,6 +5,17 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>3</WarningLevel>
+    <OutputPath></OutputPath>
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>$(SolutionDir)../bin/$(ProjectName)</OutputPath>
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.52.0.2370" />
   </ItemGroup>
@@ -12,5 +23,13 @@
   <ItemGroup>
     <ProjectReference Include="..\GoogleDriveManager\GoogleDriveManager.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="REM PostBuildEvent:ビルド後イベント&#xD;&#xA;&#xD;&#xA;REM 出力先を調整してもフルパスに変換されてしまうのでビルドイベントで疑似的に書き出し先を変更する&#xD;&#xA;@echo 書き出し先:$(OutDir)&#xD;&#xA;@echo 1:$(SolutionDir)&#xD;&#xA;@echo 2:$(SolutionDir)../bin/$(ProjectName)&#xD;&#xA;&#xD;&#xA;set DEST_DIR=$(SolutionDir)../bin/$(ProjectName)/&#xD;&#xA;&#xD;&#xA;rem xcopy /y /F /I $(OutDir) $(SolutionDir)../bin/$(ProjectName)&#xD;&#xA;&#xD;&#xA;rem xcopy /y /F bin\Debug\net5.0 $(SolutionDir)../bin/$(ProjectName)" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="REM PreBuildEvent:ビルド前イベント&#xD;&#xA;&#xD;&#xA;REM tempフォルダがあれば削除しとく&#xD;&#xA;set CACHE_DIR=$(OutDir)temp&#xD;&#xA;&#xD;&#xA;if exist %25CACHE_DIR%25 (&#xD;&#xA; rd /s /q  %25CACHE_DIR%25&#xD;&#xA; echo ディレクトリを削除しました。:%25CACHE_DIR%25&#xD;&#xA;)" />
+  </Target>
 
 </Project>
