@@ -14,6 +14,8 @@ namespace Model
         const int _ErrorFileExists = 80;
         const int _ErrorAlreadyExists = 183;
 
+        public const string Extension = ".zip";
+
         /// <summary>
         /// 圧縮
         /// </summary>
@@ -55,9 +57,63 @@ namespace Model
         public static void Compression(string srcDirPath, string destArcFileName, CompressionLevel compressionLevel, bool includeBaseDirectory) => ZipFile.CreateFromDirectory(srcDirPath, destArcFileName, compressionLevel, includeBaseDirectory);
 
         /// 解凍
-        public static void Unzip()
+        public static void Uncompression(string srcArcFilePath, string destPath, bool isOverwrite = true)
         {
+            if (!File.Exists(srcArcFilePath))
+            {
+                Console.WriteLine($"file is not exist! > {srcArcFilePath} ");
+                return;
+            }
 
+            var ext = Path.GetExtension(srcArcFilePath);
+            if (ext != Extension)
+            {
+                // 拡張子が.zipじゃない.
+                Console.WriteLine($"not match zip extension. > {ext}");
+            }
+
+            // フォルダがあれば削除しておく.
+            if (isOverwrite)
+            {
+                if (Directory.Exists(destPath))
+                {
+                    Directory.Delete(destPath, true);
+                }
+            }
+
+            try
+            {
+                ZipFile.ExtractToDirectory(srcArcFilePath, destPath);
+                Console.WriteLine($"uncompression success.");
+            }
+            catch(IOException e) when ((e.HResult & _ExceptionMask) == _ErrorFileExists || (e.HResult & _ExceptionMask) == _ErrorAlreadyExists)
+            {
+                Console.WriteLine($"uncompression stop. {Environment.NewLine}\"{destPath}\" is already exists.");
+
+                // 結合(差分のみ).
+                //var lastIndex = srcArcFilePath.LastIndexOf(Extension);
+                //if (lastIndex != -1)
+                //{
+                //    var tempPath = srcArcFilePath.Substring(0, lastIndex);
+                //    ZipFile.ExtractToDirectory(srcArcFilePath, tempPath);
+                //    var eEntries = Directory.GetFileSystemEntries(tempPath).GetEnumerator();
+                //    while (eEntries.MoveNext())
+                //    {
+                //        /*
+                //            使い道なさそうなので一旦開発中止.
+                //         */
+                //    }
+                //}
+
+                return;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"uncompression failed.\n {e.GetType().Name}:{e.Message}\n{e.StackTrace}\n");
+                throw e;
+            }
         }
+
+        public static void Uncompression(string srcArcFilePath, string destPath, Encoding encoding) => ZipFile.ExtractToDirectory(srcArcFilePath, destPath, encoding);
     }
 }
