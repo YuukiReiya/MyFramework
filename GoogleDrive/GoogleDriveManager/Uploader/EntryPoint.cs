@@ -18,7 +18,8 @@ namespace Uploader
         const string _SectionHeader = "UPLOAD";
         readonly string[] _SectionTails = new string[] { "SIMPLE", "", "" };
 #else
-        const string _Section = "UPLOAD";
+        const string _UploadSection = "UPLOAD";
+        const string _CompressionSection = "COMPRESSION";
 #endif
         static void Main(string[] targetNames)
         {
@@ -31,10 +32,25 @@ namespace Uploader
                 return;
             }
 
-            var uploadFiles = targetNames;
+            // 表示数.
+            GoogleServiceModel.PageSize = 15;
 
+            result = model.UpdateFilesCache();
+            if (result != GoogleServiceModel.Result.Success)
+            {
+                Console.WriteLine($"Update Failed.");
+                return;
+            }
+
+#if DEBUG
+            // Drive上にあるファイルをディレクトリ込みでパスのように表示する.
+            model.ShowUploadedFiles();
+#endif
+            
+            var uploadFiles = targetNames;
             if (!uploadFiles.Any())
             {
+                // 指定したiniから読み込む.
                 var ini = new IniReader(Path.GetFullPath(_IniFilePath),
 #if DEBUG
                     true
@@ -43,52 +59,39 @@ namespace Uploader
 #endif
                     );
                 var clientAssetsPath = ini.DataList.Find(data => data.Item1 == _UnityClientSection && data.Item2 == _UnityClientKey).Item3;
-                var dataCollection = ini.DataList.Where(sec => sec.Item1 == _Section);
-
-                foreach(var data in dataCollection)
+                var e = ini.DataList.Where(sec => sec.Item1 == _CompressionSection).GetEnumerator();
+                
+                // 圧縮.
+                while (e.MoveNext())
                 {
-                    var tempDir = _TempArchiveDirectory + Path.GetFileName(data.Item2);
+                    var current = e.Current;
 
-                    // 生成先の親ディレクトリが無ければ作る
-                    DirectoryInfo directory = new DirectoryInfo(tempDir);
-                    if (directory.Parent != null && !directory.Parent.Exists)
+                    // 書き出し先
+                    var destArcPath = _TempArchiveDirectory + Path.GetFileName(current.Item3);
+
+                    // ディレクトリを用意しとく.
+                    var info = new DirectoryInfo(destArcPath);
+                    if (info.Parent != null && !info.Parent.Exists)
                     {
-                        Directory.CreateDirectory(directory.Parent.FullName);
+                        Directory.CreateDirectory(info.Parent.FullName);
                     }
 
-                    ZipModel.Compression(data.Item2, tempDir);
-                }
-
-                // GDrive上にArchiveが挙がっているのか確認用に表示する.
-                Console.WriteLine($"====================================================================");
-                Console.WriteLine($"GoogleDrive Uploaded Files.");
-                Console.WriteLine($"====================================================================");
-                model.ShowUploadedList();
-                Console.WriteLine($"====================================================================");
-
-                var archivedFiles = Directory.GetFiles(_TempArchiveDirectory).Select(path => Path.GetFileName(path));
-                foreach (var arcFileName in archivedFiles)
-                {
-                    Console.WriteLine($"arcedName:{arcFileName}");
-                    if (model.IsExist(arcFileName))
+                    // 該当ファイルを圧縮し書き出す.
+                    ZipModel.Compression(current.Item3, destArcPath);
+                    var cloudPath = string.Empty;
+                    var target = ini.DataList.FirstOrDefault(data => data.Item1 == _UploadSection && data.Item2 == current.Item2);
+                    if(target != default)
                     {
-                        Console.WriteLine($"\"{arcFileName}\" is already exist. skip this file.");
-                        continue;
+                        cloudPath = target.Item3;
                     }
-                    model.Upload($"{_TempArchiveDirectory}{arcFileName}", "");
-                }
-                Console.Read();
 
-                // zip化したアーカイブファイル先
-                var arcFileNames = Directory.GetFiles(_TempArchiveDirectory);
-
-#if DEBUG
-                foreach(var name in arcFileNames)
-                {
-                    Console.Write($"zip:{name} => {Path.GetFullPath(name)}");
+                    // 既にフォルダがあれば削除してから挙げなおす.
+                    if (model.IsExist(cloudPath))
+                    {
+                        model.Delete(cloudPath);
+                    }
+                    model.Upload(destArcPath + ".zip", cloudPath);
                 }
-#endif
-                return;
             }
         }
     }
