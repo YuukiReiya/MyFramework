@@ -10,7 +10,9 @@ namespace Downloader
     {
         const string _CredentialsFilePath = @"./res/credentials.json";
         const string _IniFilePath = @"./res/system.ini";
-        const string _Section = "DOWNLOAD";
+        const string _TempArchiveDirectory = @"./temp/";
+        const string _DownloadSection = "DOWNLOAD";
+        const string _UncompressionSection = "UNCOMPRESSION";
 
         static void Main(string[] targetFileNames)
         {
@@ -23,6 +25,18 @@ namespace Downloader
                 return;
             }
 
+            result = model.UpdateFilesCache();
+            if (result != GoogleServiceModel.Result.Success)
+            {
+                Console.WriteLine($"Update Failed.");
+                return;
+            }
+
+#if DEBUG
+            // Drive上にあるファイルをディレクトリ込みでパスのように表示する.
+            model.ShowUploadedFiles();
+#endif
+
             var downloadFiles = targetFileNames;
             // 引数無し実行なら.iniから読み込む
             if (!downloadFiles.Any())
@@ -34,23 +48,39 @@ namespace Downloader
                     false
                     #endif
                     );
-                var dataCollection = ini.DataList.Where(sec => sec.Item1 == _Section);
-                targetFileNames = dataCollection
-                    .Select(key => key.Item2)
-                    .ToArray();
-            }
+                var e = ini.DataList.Where(sec => sec.Item1 == _DownloadSection).GetEnumerator();
 
-            if (model.Download(targetFileNames) != GoogleServiceModel.Result.Success)
-            {
-                Console.WriteLine("Target files download failed.");
-                foreach (var fileName in targetFileNames) Console.WriteLine(fileName);
-            }
+                // ダウンロード(一時保存)
+                while (e.MoveNext())
+                {
+                    var current = e.Current;
+                    var drivePath = current.Item3;
 
-            if (targetFileNames.All(name => string.IsNullOrEmpty(name)))
-            {
-                Console.WriteLine("Target files none.");
-            }
+                    // ダウンロード先のファイルがない.
+                    if (!model.IsExist(drivePath))
+                    {
+                        Console.WriteLine($"Download failed.{Environment.NewLine}Not found file! > {drivePath}");
+                        continue;
+                    }
 
+                    var downloadPath = _TempArchiveDirectory + drivePath;
+
+                    // 保存先のディレクトリが無ければ作る.
+                    var info = new DirectoryInfo(downloadPath);
+                    if (info.Parent != null && !info.Parent.Exists)
+                    {
+                        Directory.CreateDirectory(info.Parent.FullName);
+                    }
+                    model.Download(drivePath, downloadPath);
+
+                    // 解凍.
+                    var target = ini.DataList.FirstOrDefault(data => data.Item1 == _UncompressionSection && data.Item2 == current.Item2);
+                    if (target != default)
+                    {
+                        ZipModel.Uncompression(downloadPath, target.Item3);
+                    }
+                }
+            }
             Console.Read();
         }
     }
