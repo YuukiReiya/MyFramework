@@ -185,33 +185,38 @@ namespace Model
             foreach (var file in DriveFiles.Select(data => GetFileFullName(data.Id))) Console.WriteLine($"{file}");
         }
 
-        public Result Download(IEnumerable<string> targetFilesName)
+        public void Download(string drivePath,string downloadPath)
         {
-            if (_Service == null) return Result.Fail;
-
-            var filesListRequest = _Service.Files.List();
-            filesListRequest.PageSize = PageSize;
-            // name:拡張子まで
-            filesListRequest.Fields = "nextPageToken, files(id, name)";
-            
-            var files = filesListRequest.Execute().Files;
-
-            if (!files.Any()) return Result.Fail;
-
-            foreach(var name in targetFilesName)
+            var fileID = GetFileID(drivePath);
+            if (!string.IsNullOrEmpty(fileID))
             {
-                var target = files.FirstOrDefault(file => file.Name == name);
-                if (target != null)
-                {
-                    Download(target.Id, target.Name, "download");
-                }
-                else
-                {
-                    Console.WriteLine($"file is not find.{name}");
-                }
+                DownloadByFileID(fileID, downloadPath);
+            }
+        }
+
+        private void DownloadByFileID(string id, string downloadPath)
+        {
+            if (_Service == null)
+            {
+                Console.WriteLine($"Not initialized.");
+                return;
             }
 
-            return Result.Success;
+            try
+            {
+                var request = _Service.Files.Get(id);
+                var stream = new FileStream(
+                    downloadPath,
+                    FileMode.Create,
+                    FileAccess.ReadWrite);
+                request.Download(stream);
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.GetType().Name}{Environment.NewLine}{e.Message}{Environment.NewLine}{Environment.NewLine}{e.StackTrace}");
+                throw;
+            }
         }
 
         private void Download(string id, string fileName, string downloadDir)
@@ -306,15 +311,6 @@ namespace Model
             return null;
         }
 
-        public Result Upload(IEnumerable<string> targets)
-        {
-            foreach(var path in targets)
-            {
-                //Upload(path);
-            }
-            return Result.Success;
-        }
-
         //Cacheを見るので必要に応じて呼び出し前にキャッシュを更新する必要がある.
         // ※ゴミ箱の中身にあっても判定.
         public bool IsExist(string driveFilePath)
@@ -339,11 +335,12 @@ namespace Model
 
         // 完全削除.
         // (ゴミ箱には行かない)
-        public void DeleteForFileID(string fileID)
+        private void DeleteForFileID(string fileID)
         {
             if (_Service == null)
             {
                 Console.WriteLine($"Not initialized.");
+                return;
             }
             try
             {
@@ -379,9 +376,7 @@ namespace Model
                     List<string> list = new List<string>();
                     foreach (var f in files)
                     {
-                        //Console.WriteLine($"ID:{f.Id},Name:{f.Name},Parent{string.Join("_", f.Parents.SelectMany(_ => _))}");
                         var parentName = f.Parents != null ? string.Join("", f.Parents.SelectMany(p => p)) : "null";
-                        //Console.WriteLine($"ID:{f.Id}{Environment.NewLine}Name:{f.Name}{Environment.NewLine},Parent:{parentName}{Environment.NewLine}");
 
                         // 出力情報をパスに変換する (parentにはidが入るので変換)
                         var parentId = f.Parents != null ? string.Join("", f.Parents.SelectMany(p => p)) : string.Empty;
