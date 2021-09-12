@@ -90,7 +90,7 @@ namespace Uploader
                     {
                         model.Delete(cloudPath);
                     }
-                    model.Upload(destArcPath + ".zip", cloudPath);
+                    model.Upload(destArcPath + ZipModel.Extension, cloudPath);
                 }
             }
         }
