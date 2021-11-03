@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -7,7 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Expansion;
+using MasterData;
 
+//TODO:GoFのファクトリーパターン適用したい
 namespace IO
 {
     public abstract class Importer
@@ -18,7 +20,7 @@ namespace IO
         {
             if (!File.Exists(path))
             {
-                //�t�@�C�����Ȃ�.
+                //ファイルがない.
                 IsComplete = true;
                 return;
             }
@@ -51,14 +53,56 @@ namespace IO
             Debug.Log($"<color=orange>ID:{Thread.CurrentThread.ManagedThreadId}</color>");
 
 #if UNITY_EDITOR
-            // �֐����ݒ肳��Ă���̂ɃR���e�L�X�g���ݒ肳��ĂȂ������ŌĂяo���Ȃ�.
+            // 関数が設定されているのにコンテキストが設定されてないせいで呼び出せない.
             if (postCallback != null && context == null)
             {
                 Debug.LogWarning($"ImportWarning: Invalid callback call. > context is null.");
             }
 #endif
 
-            // �X���b�h��߂��ď������R�[���o�b�N.
+            // スレッドを戻して処理をコールバック.
+            if (context != null)
+            {
+                context.Post(_ => postCallback?.Invoke(), null);
+            }
+        }
+
+        protected virtual async Task ImportToTableAsync(TableBase table, Action<string> readLineMethod, SynchronizationContext context = null, Action postCallback = null)
+        {
+            if (table == null || !File.Exists(table.PathWithExtension))
+            {
+                //ファイルがない.
+                IsComplete = true;
+                return;
+            }
+
+            IsComplete = false;
+            try
+            {
+                await semaphore.WaitAsync();
+                using (var io = new StreamReader(table.PathWithExtension))
+                {
+                    var line = string.Empty;
+                    while ((line = await io.ReadLineAsync()) != null)
+                    {
+                        Debug.Log($"<color=yellow>PATH:{table.PathWithExtension}</color>");
+                        readLineMethod?.Invoke(line);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{e.GetType()}:{e.Message}\n{e.StackTrace}");
+                throw;
+            }
+            finally
+            {
+                IsComplete = true;
+                semaphore.Release();
+            }
+            Debug.Log($"<color=orange>読み込み終了.スレッドID:{Thread.CurrentThread.ManagedThreadId}</color>");
+
+            // スレッドを戻して処理をコールバック.
             if (context != null)
             {
                 context.Post(_ => postCallback?.Invoke(), null);

@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,26 +17,32 @@ namespace IO
         private const string Escape = "#";
         private uint row = 0;
         private List<string> columnNames = new List<string>();
-        private CSVData csv;
+        private TableBase csv;
 
         void IDisposable.Dispose()
         {
             csv = null;
         }
 
-        public async Task<CSVData> Execute(string path, SynchronizationContext context, Action callback = null)
+        public async Task<CSVTable> Execute(string path, SynchronizationContext context, Action callback = null)
         {
-            csv = new CSVData();
+            var table = new CSVTable(path);
             columnNames.Clear();
             row = 0;
-            csv.IsComplete = false;
-            await ImportAsync(path, ReadLineMethod, context, () =>
-            {
-                Debug.Log("Š®—¹ > " + path);
-                csv.IsComplete = true;
-                callback?.Invoke();
-            });
-            return csv;
+            table.IsComplete = false;
+            await ImportAsync(path, ReadLineMethod, context, callback);
+            return table;
+        }
+
+        public async Task Execute(TableBase table, SynchronizationContext context, Action callback = null)
+        {
+            csv = table;
+            columnNames.Clear();
+            row = 0;
+            table.IsComplete = false;
+            await ImportToTableAsync(table, ReadLineMethod, context, callback);
+            table.IsComplete = true;
+            return;
         }
 
         private void ReadLineMethod(string line)
@@ -67,7 +73,7 @@ namespace IO
 #if UNITY_EDITOR
                 else
                 {
-                    // “¯‚¶ƒJƒ‰ƒ€–¼‚Ìd•¡“o˜^‚ðŒx.
+                    // åŒã˜ã‚«ãƒ©ãƒ åã®é‡è¤‡ç™»éŒ²ã‚’è­¦å‘Š.
                     Debug.LogWarning($"CSVImportWarning:Duplicate column registration. > {header}");
                 }
 #endif
@@ -83,20 +89,20 @@ namespace IO
 #if DEVELOP_BY_EDITOR
                 if (columns.Length <= i)
                 {
-                    // ƒf[ƒ^‚ª‚¨‚©‚µ‚¢(æ“ª‚ÌƒJƒ‰ƒ€” < s‚Å“Ç‚Ýž‚ñ‚Å‚¢‚éƒJƒ‰ƒ€”).
+                    // ãƒ‡ãƒ¼ã‚¿ãŒãŠã‹ã—ã„(å…ˆé ­ã®ã‚«ãƒ©ãƒ æ•° < è¡Œã§èª­ã¿è¾¼ã‚“ã§ã„ã‚‹ã‚«ãƒ©ãƒ æ•°).
                     Debug.LogWarning($"CSVImportWarning:A lot of data to read.");
                     continue;
                 }
 #endif
                 var column = columnNames[i];
                 var current = (object)(string.IsNullOrEmpty(columns[i]) ? string.Empty : columns[i]);
-                if (!csv.Dict.ContainsKey(column))
+                if (!csv.Table.ContainsKey(column))
                 {
-                    csv.Dict.Add(column, new List<object>(new[] { current }));
+                    csv.Table.Add(column, new List<object>(new[] { current }));
                 }
                 else
                 {
-                    csv.Dict[column].Add(current);
+                    csv.Table[column].Add(current);
                 }
             }
         }
