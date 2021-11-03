@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="SHIFT_JIS"?>
+<files>
+    <!-- files:ルートタグ -->
+    <!-- element:要素タグ -->
+    <!-- index:登録インデックス -->
+    <!-- file:ファイルパス -->
+	<element>
+		<index>0</index>
+		<file>Masters/Table/sample.csv</file>
+	</element>
+	<element>
+		<index>1</index>
+		<file>Masters/Table/sample2.csv</file>
+	</element>
+	<element>
+		<index>2</index>
+		<file>Masters/Table/sample_heavy.csv</file>
+	</element>
+</files>

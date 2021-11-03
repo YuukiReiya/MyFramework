@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Columns = System.Collections.Generic.List<object>;
 
@@ -6,13 +6,13 @@ namespace MasterData
 {
     public class CSVData
     {
-        public Dictionary<string/* ƒJƒ‰ƒ€–¼ */, Columns> Dict;
+        public Dictionary<string/* ã‚«ãƒ©ãƒ å */, Columns> Dict;
 
         #region constructor
         public CSVData() { Dict = new Dictionary<string, Columns>(); }
         #endregion
 
-        /// ƒCƒ“ƒ|[ƒgŠ®—¹ƒtƒ‰ƒO.
+        /// ã‚¤ãƒ³ãƒãƒ¼ãƒˆå®Œäº†ãƒ•ãƒ©ã‚°.
         public bool IsComplete { get; set; } = false;
     }
 }

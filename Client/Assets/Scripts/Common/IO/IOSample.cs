@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,32 +11,14 @@ namespace Sample
         void Start()
         {
             var csv = new IO.CSVImporter();
-            //csv.Execute(path);
         }
 
         // Update is called once per frame
         void Update()
         {
-            Debug.Log("ÉCÉìÉ|Å[ÉgämîF");
-            if (DataStorage.Masters.Instance.IsComplete)
+            if (MasterData.Masters.Instance.IsComplete)
             {
-                Debug.Log("ëSÉfÅ[É^ÉCÉìÉ|Å[ÉgäÆóπ");
-            }
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                foreach(var dict in DataStorage.Masters.Instance.CSV)
-                {
-                    var current = dict;
-                    foreach (var list in current.Value.Dict)
-                    {
-                        Debug.Log($"{current.Key}:<color=green>{list.Key}</color>");
-                        foreach(var line in list.Value)
-                        {
-                            Debug.Log($"{line}");
-                        }
-                    }
-                }
+                Debug.Log("Complete import task.");
             }
         }
     }
