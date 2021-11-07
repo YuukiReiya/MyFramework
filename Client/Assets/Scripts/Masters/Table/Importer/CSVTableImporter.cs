@@ -6,12 +6,11 @@ using Expansion;
 using IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MasterData;
-using Columns = System.Collections.Generic.List<object>;
+using Masters;
 
 namespace IO
 {
-    public class CSVImporter : Importer, IDisposable
+    public class CSVTableImporter : TableImporter, IDisposable
     {
         private const char Delimiter = ',';
         private const string Escape = "#";
@@ -24,17 +23,7 @@ namespace IO
             csv = null;
         }
 
-        public async Task<CSVTable> Execute(string path, SynchronizationContext context, Action callback = null)
-        {
-            var table = new CSVTable(path);
-            columnNames.Clear();
-            row = 0;
-            table.IsComplete = false;
-            await ImportAsync(path, ReadLineMethod, context, callback);
-            return table;
-        }
-
-        public async Task Execute(TableBase table, SynchronizationContext context, Action callback = null)
+        public override async Task Execute(TableBase table, SynchronizationContext context, Action callback = null)
         {
             csv = table;
             columnNames.Clear();
@@ -42,7 +31,6 @@ namespace IO
             table.IsComplete = false;
             await ImportToTableAsync(table, ReadLineMethod, context, callback);
             table.IsComplete = true;
-            return;
         }
 
         private void ReadLineMethod(string line)

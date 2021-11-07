@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Columns = System.Collections.Generic.List<object>;
 
-namespace MasterData
+namespace Masters
 {
     public class Schedule
     {

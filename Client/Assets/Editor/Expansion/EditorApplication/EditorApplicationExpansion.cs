@@ -4,18 +4,18 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEditor;
+using UnityEngine.Events;
 
 #if UNITY_EDITOR
 [InitializeOnLoad]
 public static class EditorApplicationExpansion
 {
     private const BindingFlags c_BindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic;
-    private static readonly FieldInfo m_info = null;
-
+    private static readonly FieldInfo m_info = typeof(EditorApplication).GetField("globalEventHandler", c_BindingFlags);
     static EditorApplicationExpansion()
     {
         UnityEngine.Debug.Log("<color=green>InitializeOnLoad</color>:EditorApplicationExpansion");
-        m_info = typeof(EditorApplication).GetField("OnValidate", c_BindingFlags);
+        OnValidate += () => { UnityEngine.Debug.Log("OnValidate"); };
     }
 
     public static EditorApplication.CallbackFunction OnValidate
