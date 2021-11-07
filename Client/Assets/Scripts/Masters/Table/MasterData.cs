@@ -5,43 +5,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Common;
-using MasterData;
+using Masters;
 using IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Expansion;
 
-namespace MasterData
+namespace Masters
 {
-    public class Masters : SingletonBehaviour<Masters>
+    public class MasterData : SingletonBehaviour<MasterData>
     {
         #region 変数
         public static SynchronizationContext Context { get; private set; } = null;
 
-        public Dictionary<CSVIndex, CSVData> CSV { get; private set; }
-        private CSVImporter csvImporter = null;
         private Task importTask = null;
-
+        private Dictionary<string, TableImporter> tableImporterCacheDic = new Dictionary<string, TableImporter>();
         public Dictionary<uint, TableBase> TableDic { get; private set; } = new Dictionary<uint, TableBase>();
         #endregion
 
         #region 列挙体
-        public enum CSVIndex : int
-        {
-            Sample = 0,         // 読み込みサンプル
-            Sample2,             // 読み込みサンプル
-            HeavySample,     // 読み込みサンプル (重い)
-        }
         #endregion
 
         #region readonly
-        private static readonly Dictionary<CSVIndex, string/* ファイルパス */> CSVDic = new Dictionary<CSVIndex, string>
-        {
-            {CSVIndex.Sample,"C:\\Users\\yuuki\\Documents\\develop\\Template-OnlineProject\\Masters\\sample.csv" },
-            {CSVIndex.Sample2,"C:\\Users\\yuuki\\Documents\\develop\\Template-OnlineProject\\Masters\\sample2.csv" },
-            {CSVIndex.HeavySample,"C:\\Users\\yuuki\\Documents\\develop\\Template-OnlineProject\\Masters\\sample_heavy.csv" },
-        };
-
         private const string DocumentPath = @"Assets/ExternalResources/Masters.xml";
         private const string RootTag = @"files";
         private const string ElementTag = @"element";
@@ -64,14 +50,18 @@ namespace MasterData
 
         protected override void Awake()
         {
+            Register();
+            Import();
         }
 
-        [ContextMenu("sample import")]
-        private void Test()
+#if UNITY_EDITOR
+        [ContextMenu("Import Test")]
+        private void TestImport()
         {
             Register();
             Import();
         }
+#endif
 
         /// 読み込むテーブルをメモリに確保.
         public void Register()
@@ -129,48 +119,31 @@ namespace MasterData
             foreach (var table in TableDic)
             {
                 var current = table.Value;
-                await ImportToTableByExtension(current.PathWithExtension, current);
+                TableImporter importer = null;
+
+                var extension = Path.GetExtension(current.PathWithExtension);
+                if (!tableImporterCacheDic.TryGetValue(extension, out importer))
+                {
+                    importer = TableImportFactory.CreateTableImporter(current.PathWithExtension);
+                    tableImporterCacheDic.Add(extension, importer);
+                }
+                Debug.Log($"{current.PathWithExtension} is import start.");
+                await importer.Execute(current, Context);
+                Debug.Log($"{current.PathWithExtension} is import complete.");
             }
+            Debug.Log($"Completed import of registered table.");
             RemoveImporters();
         }
 
         private void SetupImporters()
         {
-            if (csvImporter == null)
-            {
-                csvImporter = new CSVImporter();
-            }
+            tableImporterCacheDic = new Dictionary<string, TableImporter>();
         }
 
         private void RemoveImporters()
         {
-            if (csvImporter != null)
-            {
-                csvImporter = null;
-            }
-        }
-
-        private async Task ImportToTableByExtension(string pathWithExtension, TableBase table)
-        {
-            var ext = Path.GetExtension(pathWithExtension);
-            switch (ext)
-            {
-                case CSVTable.Extension:
-                    {
-                        //await いらない？
-                        await ImportByCSV(pathWithExtension, table);
-                    }
-                    break;
-
-                default:
-                    Debug.LogWarning($"MasterImportWarning:Invalid extension. > {pathWithExtension}");
-                    break;
-            }
-        }
-
-        private async Task ImportByCSV(string pathWithExtension, TableBase csv)
-        {
-            await csvImporter.Execute(csv, Context) ;
+            tableImporterCacheDic.Clear();
+            tableImporterCacheDic = null;
         }
     }
 }
