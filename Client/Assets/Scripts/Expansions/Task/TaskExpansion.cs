@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +11,7 @@ namespace Expansion
     {
         private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-        // ƒ^ƒXƒN‚ÌÀs–½—ß.
+        // ã‚¿ã‚¹ã‚¯ã®å®Ÿè¡Œå‘½ä»¤.
         public static async Task Execute(this Task task, Action postProcess = null)
         {
             try
