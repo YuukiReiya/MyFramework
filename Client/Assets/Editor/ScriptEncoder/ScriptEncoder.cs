@@ -70,7 +70,7 @@ namespace Editor.Expansion
             if (enc != null)
             {
                 // BOM付きUTF-8なら変換は不要なのでリターンする
-                if (enc != Encoding.UTF8 && HaveBOM(bin)) return;
+                if (enc == Encoding.UTF8 && HaveBOM(bin)) return;
             }
             // エンコード形式がわからなかった.
             else
