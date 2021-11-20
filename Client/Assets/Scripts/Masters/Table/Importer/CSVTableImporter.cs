@@ -18,6 +18,8 @@ namespace IO
         private List<string> columnNames = new List<string>();
         private TableBase csv;
 
+        public CSVTableImporter(CancellationTokenSource cts) : base(cts) { }
+
         void IDisposable.Dispose()
         {
             csv = null;
