@@ -18,7 +18,7 @@ namespace Masters
     {
         #region 変数
         public static SynchronizationContext Context { get; private set; } = null;
-
+        private CancellationTokenSource cts = new CancellationTokenSource();
         private Task importTask = null;
         private Dictionary<string, TableImporter> tableImporterCacheDic = new Dictionary<string, TableImporter>();
         public Dictionary<uint, TableBase> TableDic { get; private set; } = new Dictionary<uint, TableBase>();
@@ -54,6 +54,11 @@ namespace Masters
             Import();
         }
 
+        private void OnApplicationQuit()
+        {
+            Debug.LogError("OnApplicationQuit");
+            cts.Cancel();
+        }
 #if UNITY_EDITOR
         [ContextMenu("Import Test")]
         private void TestImport()
@@ -124,7 +129,7 @@ namespace Masters
                 var extension = Path.GetExtension(current.PathWithExtension);
                 if (!tableImporterCacheDic.TryGetValue(extension, out importer))
                 {
-                    importer = TableImportFactory.CreateTableImporter(current.PathWithExtension);
+                    importer = TableImportFactory.CreateTableImporter(current.PathWithExtension, cts);
                     tableImporterCacheDic.Add(extension, importer);
                 }
                 Debug.Log($"{current.PathWithExtension} is import start.");
