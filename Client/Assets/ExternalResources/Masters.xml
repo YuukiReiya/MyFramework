@@ -16,4 +16,8 @@
 		<index>2</index>
 		<file>Masters/Table/sample_heavy.csv</file>
 	</element>
+	<element>
+		<index>3</index>
+		<file>Masters/Table/sample.yaml</file>
+	</element>
 </files>
