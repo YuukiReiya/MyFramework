@@ -18,7 +18,7 @@ namespace Downloader
         {
             var model = GoogleServiceModel.Instance;
 
-            var result = model.Setup(Path.GetFullPath(_CredentialsFilePath));
+            var result = model.Setup(Path.GetFullPath(_CredentialsFilePath),"");
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine("Setup Failed.");
