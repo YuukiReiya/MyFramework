@@ -9,6 +9,7 @@ namespace Uploader
     class EntryPoint
     {
         const string _CredentialsFilePath = @"./res/credentials.json";
+        const string _TokenFolderPath = @"./res/token.json";
         const string _IniFilePath = @"./res/system.ini";
         const string _TempArchiveDirectory = @"./temp/";
         const string _UnityClientSection = "COMMON";
@@ -21,11 +22,42 @@ namespace Uploader
         const string _UploadSection = "UPLOAD";
         const string _CompressionSection = "COMPRESSION";
 #endif
-        static void Main(string[] targetNames)
+        static void Main(string[] resourcesDirectory)
         {
             var model = GoogleServiceModel.Instance;
 
-            var result = model.Setup(Path.GetFullPath(_CredentialsFilePath));
+            if(resourcesDirectory.Length < 1)
+            {
+                //早期リターン.
+                //Console.WriteLine($"invalid application argments. [0]:resource root directory.");
+                //return;
+
+                //NOTE: bin\$(Configuration)\net5.0\*.exe
+                resourcesDirectory = new[] { $"../../../" };
+            }
+
+            var resDir = resourcesDirectory[0];
+            var credentialPath = resDir + _CredentialsFilePath;
+
+            if (!File.Exists(credentialPath))
+            {
+                Console.WriteLine($"credentials file is not exist. > {credentialPath}{Environment.NewLine}[FullPath]:{Path.GetFullPath(credentialPath)}");
+                Console.ReadKey();
+                return;
+            }
+
+            var tokenFolderPath = resDir + _TokenFolderPath;
+
+#if DEBUG//RELEASEビルドなら無い場合でもバイナリ直下に作る.
+            if (!Directory.Exists(tokenFolderPath))
+            {
+                Console.WriteLine($"token.json folder is not exist. > {tokenFolderPath}{Environment.NewLine}[FullPath]:{Path.GetFullPath(tokenFolderPath)}");
+                Console.ReadKey();
+                return;
+            }
+#endif
+
+            var result = model.Setup(Path.GetFullPath(credentialPath), Path.GetFullPath(tokenFolderPath));
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine("Setup Failed.");
@@ -46,53 +78,65 @@ namespace Uploader
             // Drive上にあるファイルをディレクトリ込みでパスのように表示する.
             model.ShowUploadedFiles();
 #endif
-            
-            var uploadFiles = targetNames;
-            if (!uploadFiles.Any())
+            var iniPath = resDir + _IniFilePath;
+            if (!File.Exists(iniPath))
             {
-                // 指定したiniから読み込む.
-                var ini = new IniReader(Path.GetFullPath(_IniFilePath),
+                Console.WriteLine($"ini file is not exist. > {iniPath}");
+                Console.ReadKey();
+                return;
+            }
+            // 指定したiniから読み込む.
+            var ini = new IniReader(Path.GetFullPath(iniPath),
 #if DEBUG
                     true
 #else
                     false
 #endif
                     );
-                var clientAssetsPath = ini.DataList.Find(data => data.Item1 == _UnityClientSection && data.Item2 == _UnityClientKey).Item3;
-                var e = ini.DataList.Where(sec => sec.Item1 == _CompressionSection).GetEnumerator();
-                
-                // 圧縮.
-                while (e.MoveNext())
+            var clientAssetsPath = ini.DataList.Find(data => data.Item1 == _UnityClientSection && data.Item2 == _UnityClientKey).Item3;
+            var e = ini.DataList.Where(sec => sec.Item1 == _CompressionSection).GetEnumerator();
+
+            // 圧縮.
+            while (e.MoveNext())
+            {
+                var current = e.Current;
+
+                // 書き出し先
+                var destArcPath = _TempArchiveDirectory + Path.GetFileName(current.Item3);
+
+                // ディレクトリを用意しとく.
+                var info = new DirectoryInfo(destArcPath);
+                if (info.Parent != null && !info.Parent.Exists)
                 {
-                    var current = e.Current;
-
-                    // 書き出し先
-                    var destArcPath = _TempArchiveDirectory + Path.GetFileName(current.Item3);
-
-                    // ディレクトリを用意しとく.
-                    var info = new DirectoryInfo(destArcPath);
-                    if (info.Parent != null && !info.Parent.Exists)
-                    {
-                        Directory.CreateDirectory(info.Parent.FullName);
-                    }
-
-                    // 該当ファイルを圧縮し書き出す.
-                    ZipModel.Compression(current.Item3, destArcPath);
-                    var cloudPath = string.Empty;
-                    var target = ini.DataList.FirstOrDefault(data => data.Item1 == _UploadSection && data.Item2 == current.Item2);
-                    if(target != default)
-                    {
-                        cloudPath = target.Item3;
-                    }
-
-                    // 既にフォルダがあれば削除してから挙げなおす.
-                    if (model.IsExist(cloudPath))
-                    {
-                        model.Delete(cloudPath);
-                    }
-                    model.Upload(destArcPath + ZipModel.Extension, cloudPath);
+                    Directory.CreateDirectory(info.Parent.FullName);
                 }
+
+                // 圧縮前にアーカイブが書き出されていたら削除.
+                var destArcPathWithExt = Path.ChangeExtension(Path.GetFullPath(destArcPath), ZipModel.Extension);
+                if (File.Exists(Path.GetFullPath(destArcPathWithExt)))
+                {
+                    File.Delete(Path.GetFullPath(destArcPathWithExt));
+                    Console.WriteLine($"Archive file is already exists. > delete:{Path.GetFullPath(destArcPathWithExt)}");
+                }
+
+                // 該当ファイルを圧縮し書き出す.
+                ZipModel.Compression(current.Item3, destArcPath);
+                var cloudPath = string.Empty;
+                var target = ini.DataList.FirstOrDefault(data => data.Item1 == _UploadSection && data.Item2 == current.Item2);
+                if(target != default)
+                {
+                    cloudPath = target.Item3;
+                }
+
+                // 既にフォルダがあれば削除してから挙げなおす.
+                if (model.IsExist(cloudPath))
+                {
+                    model.Delete(cloudPath);
+                }
+
+                model.Upload(destArcPathWithExt, cloudPath);
             }
+            Console.ReadKey();
         }
     }
 }

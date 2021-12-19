@@ -15,6 +15,8 @@ using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 
+// エラーハンドル.
+//https://www.milk-island.net/translate/ggd/drive/api/v3/handle-errors.html
 
 namespace Model
 {
@@ -120,7 +122,7 @@ namespace Model
         "teamDriveId, thumbnailLink, thumbnailVersion, trashed, trashedTime, trashingUser, version, videoMediaMetadata, viewedByMe," +
         "viewedByMeTime, viewersCanCopyContent, webContentLink, webViewLink, writersCanShare)";
 
-        public Result Setup(string credentialFilePath)
+        public Result Setup(string credentialFilePath, string tokenFolderPath)
         {
             UserCredential credential;
 
@@ -135,7 +137,7 @@ namespace Model
                 using (var stream =
                     new FileStream(credentialFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    string credPath = "token.json";
+                    string credPath = tokenFolderPath;
                     credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.FromStream(stream).Secrets,
                         _Scopes,
@@ -182,7 +184,11 @@ namespace Model
                 Console.WriteLine($"not initialized.");
                 return;
             }
-            foreach (var file in DriveFiles.Select(data => GetFileFullName(data.Id))) Console.WriteLine($"{file}");
+            foreach (var file in DriveFiles)
+            {
+                var path = GetFileFullName(file.Id);
+                Console.WriteLine($"{path} : {file.Id}"); ;
+            }
         }
 
         public void Download(string drivePath,string downloadPath)
@@ -243,7 +249,7 @@ namespace Model
             {
                 try
                 {
-                    var result = DriveFiles.First().Id;
+                    var result = targets.First().Id;
                     return result;
                 }
                 catch (InvalidOperationException e)
@@ -446,12 +452,12 @@ namespace Model
                     var parent = GetFile(id);
                     if (parent != null)
                     {
-                        io.Parents = parent.Parents;
+                        io.Parents = new string[] { parent.Id };
                     }
                 }
                 request.Fields = _PropertyFields;
                 Google.Apis.Upload.IUploadProgress progress = null;
-
+                
                 try
                 {
                     progress = request.Upload();
