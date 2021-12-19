@@ -184,7 +184,11 @@ namespace Model
                 Console.WriteLine($"not initialized.");
                 return;
             }
-            foreach (var file in DriveFiles.Select(data => GetFileFullName(data.Id))) Console.WriteLine($"{file}");
+            foreach (var file in DriveFiles)
+            {
+                var path = GetFileFullName(file.Id);
+                Console.WriteLine($"{path} : {file.Id}"); ;
+            }
         }
 
         public void Download(string drivePath,string downloadPath)
@@ -245,7 +249,7 @@ namespace Model
             {
                 try
                 {
-                    var result = DriveFiles.First().Id;
+                    var result = targets.First().Id;
                     return result;
                 }
                 catch (InvalidOperationException e)
@@ -448,12 +452,12 @@ namespace Model
                     var parent = GetFile(id);
                     if (parent != null)
                     {
-                        io.Parents = parent.Parents;
+                        io.Parents = new string[] { parent.Id };
                     }
                 }
                 request.Fields = _PropertyFields;
                 Google.Apis.Upload.IUploadProgress progress = null;
-
+                
                 try
                 {
                     progress = request.Upload();

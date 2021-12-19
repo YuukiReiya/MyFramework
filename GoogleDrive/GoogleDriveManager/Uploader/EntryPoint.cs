@@ -111,6 +111,14 @@ namespace Uploader
                     Directory.CreateDirectory(info.Parent.FullName);
                 }
 
+                // 圧縮前にアーカイブが書き出されていたら削除.
+                var destArcPathWithExt = Path.ChangeExtension(Path.GetFullPath(destArcPath), ZipModel.Extension);
+                if (File.Exists(Path.GetFullPath(destArcPathWithExt)))
+                {
+                    File.Delete(Path.GetFullPath(destArcPathWithExt));
+                    Console.WriteLine($"Archive file is already exists. > delete:{Path.GetFullPath(destArcPathWithExt)}");
+                }
+
                 // 該当ファイルを圧縮し書き出す.
                 ZipModel.Compression(current.Item3, destArcPath);
                 var cloudPath = string.Empty;
@@ -125,7 +133,8 @@ namespace Uploader
                 {
                     model.Delete(cloudPath);
                 }
-                model.Upload(destArcPath + ZipModel.Extension, cloudPath);
+
+                model.Upload(destArcPathWithExt, cloudPath);
             }
             Console.ReadKey();
         }
