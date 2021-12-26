@@ -52,6 +52,7 @@ namespace Downloader
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine("Setup Failed.");
+                Console.ReadKey();
                 return;
             }
 
@@ -59,6 +60,7 @@ namespace Downloader
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine($"Update Failed.");
+                Console.ReadKey();
                 return;
             }
 
@@ -116,7 +118,6 @@ namespace Downloader
             if (Directory.Exists(temp))
             {
                 Directory.Delete(temp, true);
-                return;
             }
 
             Console.Read();

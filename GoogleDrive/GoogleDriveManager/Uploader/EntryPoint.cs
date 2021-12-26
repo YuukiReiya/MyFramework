@@ -51,6 +51,7 @@ namespace Uploader
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine("Setup Failed.");
+                Console.ReadKey();
                 return;
             }
 
@@ -61,6 +62,7 @@ namespace Uploader
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine($"Update Failed.");
+                Console.ReadKey();
                 return;
             }
 
