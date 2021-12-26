@@ -33,7 +33,7 @@ namespace Model
             {
                 // 拡張子がついてなければ付ける
                 ZipFile.CreateFromDirectory(srcDirPath, Path.GetExtension(destArcFileName) != string.Empty ? destArcFileName : destArcFileName + ".zip");
-                Console.WriteLine($"compression success.");
+                Console.WriteLine($"compression success.{Environment.NewLine}source: > {Path.GetFullPath(srcDirPath)}{Environment.NewLine}destination: > {Path.GetFullPath(destArcFileName)}");
             }
             catch (IOException e) when ((e.HResult & _ExceptionMask) == _ErrorFileExists || (e.HResult & _ExceptionMask) == _ErrorAlreadyExists)
             {
@@ -84,7 +84,7 @@ namespace Model
             try
             {
                 ZipFile.ExtractToDirectory(srcArcFilePath, destPath);
-                Console.WriteLine($"uncompression success.");
+                Console.WriteLine($"uncompression success.{Environment.NewLine}source: > {Path.GetFullPath(srcArcFilePath)}{Environment.NewLine}destination: > {Path.GetFullPath(destPath)}");
             }
             catch(IOException e) when ((e.HResult & _ExceptionMask) == _ErrorFileExists || (e.HResult & _ExceptionMask) == _ErrorAlreadyExists)
             {
