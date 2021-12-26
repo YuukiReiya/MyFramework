@@ -2,42 +2,32 @@
 using System.IO;
 using System.Linq;
 using Model;
-using Ini;
+using System.Xml.Linq;
+using Resources.XML;
 
 namespace Uploader
 {
     class EntryPoint
     {
-        const string _CredentialsFilePath = @"./res/credentials.json";
-        const string _TokenFolderPath = @"./res/token.json";
-        const string _IniFilePath = @"./res/system.ini";
-        const string _TempArchiveDirectory = @"./temp/";
-        const string _UnityClientSection = "COMMON";
-        const string _UnityClientKey = "UNITY_PROJECT_PATH";
-#if false
-        // Upload方法は3種類あるけど、ぶっちゃけResumableだけでいい。
-        const string _SectionHeader = "UPLOAD";
-        readonly string[] _SectionTails = new string[] { "SIMPLE", "", "" };
-#else
-        const string _UploadSection = "UPLOAD";
-        const string _CompressionSection = "COMPRESSION";
-#endif
-        static void Main(string[] resourcesDirectory)
+        static void Main(string[] args)
         {
             var model = GoogleServiceModel.Instance;
-
-            if(resourcesDirectory.Length < 1)
+            var documentXMLPath = args.Length > 0 ? args[0] : string.Empty;
+            if (string.IsNullOrEmpty(documentXMLPath))
             {
-                //早期リターン.
-                //Console.WriteLine($"invalid application argments. [0]:resource root directory.");
-                //return;
-
-                //NOTE: bin\$(Configuration)\net5.0\*.exe
-                resourcesDirectory = new[] { $"../../../" };
+                documentXMLPath = "../../../res/config.xml";
             }
 
-            var resDir = resourcesDirectory[0];
-            var credentialPath = resDir + _CredentialsFilePath;
+            if (!File.Exists(documentXMLPath))
+            {
+                Console.WriteLine($"Not found xml file. > {Path.GetFullPath(documentXMLPath)}");
+                Console.ReadKey();
+                return;
+            }
+
+            var doc = XDocument.Load(documentXMLPath);
+            var root = doc.Element(Config._RootTag);
+            var credentialPath = root.Element(Config._CredentialsTag).Value;
 
             if (!File.Exists(credentialPath))
             {
@@ -46,7 +36,7 @@ namespace Uploader
                 return;
             }
 
-            var tokenFolderPath = resDir + _TokenFolderPath;
+            var tokenFolderPath = root.Element(Config._TokenTag).Value;
 
 #if DEBUG//RELEASEビルドなら無い場合でもバイナリ直下に作る.
             if (!Directory.Exists(tokenFolderPath))
@@ -61,6 +51,7 @@ namespace Uploader
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine("Setup Failed.");
+                Console.ReadKey();
                 return;
             }
 
@@ -71,6 +62,7 @@ namespace Uploader
             if (result != GoogleServiceModel.Result.Success)
             {
                 Console.WriteLine($"Update Failed.");
+                Console.ReadKey();
                 return;
             }
 
@@ -78,31 +70,33 @@ namespace Uploader
             // Drive上にあるファイルをディレクトリ込みでパスのように表示する.
             model.ShowUploadedFiles();
 #endif
-            var iniPath = resDir + _IniFilePath;
-            if (!File.Exists(iniPath))
-            {
-                Console.WriteLine($"ini file is not exist. > {iniPath}");
-                Console.ReadKey();
-                return;
-            }
-            // 指定したiniから読み込む.
-            var ini = new IniReader(Path.GetFullPath(iniPath),
-#if DEBUG
-                    true
-#else
-                    false
-#endif
-                    );
-            var clientAssetsPath = ini.DataList.Find(data => data.Item1 == _UnityClientSection && data.Item2 == _UnityClientKey).Item3;
-            var e = ini.DataList.Where(sec => sec.Item1 == _CompressionSection).GetEnumerator();
 
+            var targets = root.Element(Config._UploadTag).Elements(Config._DataTag);
+            var e = targets.GetEnumerator();
+            if (!targets.Any())
+            {
+                // アップロード対象のデータが設定されていない（アップロードの必要がない）
+                Console.WriteLine($"targets file is not exist.");
+                Console.ReadKey();
+            }
+
+            var temp = root.Element(Config._TempTag).Value;
+            if (!Path.EndsInDirectorySeparator(temp))
+            {
+                // Unix(Linux)が'/'だった気がするので合わせる.
+                //temp += Path.DirectorySeparatorChar;// 「\」
+                temp += Path.AltDirectorySeparatorChar;// 「/」
+            }
+            
             // 圧縮.
             while (e.MoveNext())
             {
                 var current = e.Current;
+                var source = current.Element(Config._SourceTag).Value;
+                var destination = current.Element(Config._DestinationTag).Value;
 
                 // 書き出し先
-                var destArcPath = _TempArchiveDirectory + Path.GetFileName(current.Item3);
+                var destArcPath = temp + Path.GetFileName(source);
 
                 // ディレクトリを用意しとく.
                 var info = new DirectoryInfo(destArcPath);
@@ -120,21 +114,15 @@ namespace Uploader
                 }
 
                 // 該当ファイルを圧縮し書き出す.
-                ZipModel.Compression(current.Item3, destArcPath);
-                var cloudPath = string.Empty;
-                var target = ini.DataList.FirstOrDefault(data => data.Item1 == _UploadSection && data.Item2 == current.Item2);
-                if(target != default)
-                {
-                    cloudPath = target.Item3;
-                }
+                ZipModel.Compression(source, destArcPath);
 
                 // 既にフォルダがあれば削除してから挙げなおす.
-                if (model.IsExist(cloudPath))
+                if (model.IsExist(destination))
                 {
-                    model.Delete(cloudPath);
+                    model.Delete(destination);
                 }
 
-                model.Upload(destArcPathWithExt, cloudPath);
+                model.Upload(destArcPathWithExt, destination);
             }
             Console.ReadKey();
         }
