@@ -1,7 +1,8 @@
 # Googleアカウントのトークンが格納されているので外しとく。
-token.json/
-credentials.json
+res/token.json
 
 # 生成
 obj/
 bin/
+dll/
+temp/
