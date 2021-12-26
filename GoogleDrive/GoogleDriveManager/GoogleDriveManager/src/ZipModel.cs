@@ -57,7 +57,7 @@ namespace Model
         public static void Compression(string srcDirPath, string destArcFileName, CompressionLevel compressionLevel, bool includeBaseDirectory) => ZipFile.CreateFromDirectory(srcDirPath, destArcFileName, compressionLevel, includeBaseDirectory);
 
         /// 解凍
-        public static void Uncompression(string srcArcFilePath, string destPath, bool isOverwrite = true)
+        public static void Uncompression(string srcArcFilePath, string destPath, bool isOverwrite = false)
         {
             if (!File.Exists(srcArcFilePath))
             {

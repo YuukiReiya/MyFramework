@@ -14,6 +14,11 @@ namespace Downloader
         {
             var model = GoogleServiceModel.Instance;
             var documentXMLPath = args.Length > 0 ? args[0] : string.Empty;
+            var isOverwrite = args.Length > 1 ? Convert.ToBoolean(args[1]) : false;
+            if (args.Length > 1)
+            {
+                var arg = args[1];
+            }
             if (string.IsNullOrEmpty(documentXMLPath))
             {
                 documentXMLPath = "../../../res/config.xml";
@@ -111,7 +116,7 @@ namespace Downloader
                 model.Download(source, downloadPath);
 
                 // 解凍.
-                ZipModel.Uncompression(downloadPath, destination);
+                ZipModel.Uncompression(downloadPath, destination, isOverwrite);
             }
 
             // 一時保存に使ったフォルダを削除.
