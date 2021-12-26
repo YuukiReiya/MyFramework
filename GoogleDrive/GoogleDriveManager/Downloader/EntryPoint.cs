@@ -2,35 +2,33 @@
 using System.IO;
 using System.Linq;
 using Model;
-using Ini;
+using System.Xml.Linq;
+using Resources.XML;
 
 namespace Downloader
 {
     class EntryPoint
     {
-        const string _CredentialsFilePath = @"./res/credentials.json";
-        const string _TokenFolderPath = @"./res/token.json";
-        const string _IniFilePath = @"./res/system.ini";
-        const string _TempArchiveDirectory = @"./temp/";
-        const string _DownloadSection = "DOWNLOAD";
-        const string _UncompressionSection = "UNCOMPRESSION";
 
-        static void Main(string[] resourcesDirectory)
+        static void Main(string[] args)
         {
             var model = GoogleServiceModel.Instance;
-
-            if (resourcesDirectory.Length < 1)
+            var documentXMLPath = args.Length > 0 ? args[0] : string.Empty;
+            if (string.IsNullOrEmpty(documentXMLPath))
             {
-                //早期リターン.
-                //Console.WriteLine($"invalid application argments. [0]:resource root directory.");
-                //return;
-
-                //NOTE: bin\$(Configuration)\net5.0\*.exe
-                resourcesDirectory = new[] { $"../../../" };
+                documentXMLPath = "../../../res/config.xml";
             }
 
-            var resDir = resourcesDirectory[0];
-            var credentialPath = resDir + _CredentialsFilePath;
+            if (!File.Exists(documentXMLPath))
+            {
+                Console.WriteLine($"Not found xml file. > {Path.GetFullPath(documentXMLPath)}");
+                Console.ReadKey();
+                return;
+            }
+
+            var doc = XDocument.Load(documentXMLPath);
+            var root = doc.Element(Config._RootTag);
+            var credentialPath = root.Element(Config._CredentialsTag).Value;
 
             if (!File.Exists(credentialPath))
             {
@@ -39,7 +37,7 @@ namespace Downloader
                 return;
             }
 
-            var tokenFolderPath = resDir + _TokenFolderPath;
+            var tokenFolderPath = root.Element(Config._TokenTag).Value;
 
 #if DEBUG//RELEASEビルドなら無い場合でもバイナリ直下に作る.
             if (!Directory.Exists(tokenFolderPath))
@@ -49,14 +47,6 @@ namespace Downloader
                 return;
             }
 #endif
-
-            var iniPath = resDir + _IniFilePath;
-            if (!File.Exists(iniPath))
-            {
-                Console.WriteLine($"ini file is not exist. > {iniPath}");
-                Console.ReadKey();
-                return;
-            }
 
             var result = model.Setup(Path.GetFullPath(credentialPath), Path.GetFullPath(tokenFolderPath));
             if (result != GoogleServiceModel.Result.Success)
@@ -77,30 +67,38 @@ namespace Downloader
             model.ShowUploadedFiles();
 #endif
 
-            // 引数無し実行なら.iniから読み込む
-            var ini = new IniReader(Path.GetFullPath(iniPath),
-#if DEBUG
-                    true
-#else
-                    false
-#endif
-                    );
-            var e = ini.DataList.Where(sec => sec.Item1 == _DownloadSection).GetEnumerator();
+            var targets = root.Element(Config._DownloadTag).Elements(Config._DataTag);
+            var e = targets.GetEnumerator();
+            if (!targets.Any())
+            {
+                // ダウンロード対象のデータが設定されていない（ダウンロードの必要がない）
+                Console.WriteLine($"targets file is not exist.");
+                Console.ReadKey();
+            }
+
+            var temp = root.Element(Config._TempTag).Value;
+            if (!Path.EndsInDirectorySeparator(temp))
+            {
+                // Unix(Linux)が'/'だった気がするので合わせる.
+                //temp += Path.DirectorySeparatorChar;// 「\」
+                temp += Path.AltDirectorySeparatorChar;// 「/」
+            }
 
             // ダウンロード(一時保存)
             while (e.MoveNext())
             {
                 var current = e.Current;
-                var drivePath = current.Item3;
+                var source = current.Element(Config._SourceTag).Value;
+                var destination = current.Element(Config._DestinationTag).Value;
 
                 // ダウンロード先のファイルがない.
-                if (!model.IsExist(drivePath))
+                if (!model.IsExist(source))
                 {
-                    Console.WriteLine($"Download failed.{Environment.NewLine}Not found file! > {drivePath}");
+                    Console.WriteLine($"Download failed.{Environment.NewLine}Not found file! > {source}");
                     continue;
                 }
 
-                var downloadPath = _TempArchiveDirectory + drivePath;
+                var downloadPath = temp + Path.GetFileName(source);
 
                 // 保存先のディレクトリが無ければ作る.
                 var info = new DirectoryInfo(downloadPath);
@@ -108,15 +106,19 @@ namespace Downloader
                 {
                     Directory.CreateDirectory(info.Parent.FullName);
                 }
-                model.Download(drivePath, downloadPath);
+                model.Download(source, downloadPath);
 
                 // 解凍.
-                var target = ini.DataList.FirstOrDefault(data => data.Item1 == _UncompressionSection && data.Item2 == current.Item2);
-                if (target != default)
-                {
-                    ZipModel.Uncompression(downloadPath, target.Item3);
-                }
+                ZipModel.Uncompression(downloadPath, destination);
             }
+
+            // 一時保存に使ったフォルダを削除.
+            if (Directory.Exists(temp))
+            {
+                Directory.Delete(temp, true);
+                return;
+            }
+
             Console.Read();
         }
     }
