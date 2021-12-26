@@ -6,19 +6,19 @@
 #bat/
 
 # gRPC
-Client/Assets/Plugins/Google.Protobuf
-Client/Assets/Plugins/Google.Protobuf.meta
-Client/Assets/Plugins/Grpc.Core
-Client/Assets/Plugins/Grpc.Core.meta
-Client/Assets/Plugins/Grpc.Core.Api
-Client/Assets/Plugins/Grpc.Core.Api.meta
-Client/Assets/Plugins/System.Buffers
-Client/Assets/Plugins/System.Buffers.meta
-Client/Assets/Plugins/System.Memory
-Client/Assets/Plugins/System.Memory.meta
-Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe
-Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.meta
-Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe.meta
+Client/Assets/Plugins/*/Google.Protobuf
+Client/Assets/Plugins/*/Google.Protobuf.meta
+Client/Assets/Plugins/*/Grpc.Core
+Client/Assets/Plugins/*/Grpc.Core.meta
+Client/Assets/Plugins/*/Grpc.Core.Api
+Client/Assets/Plugins/*/Grpc.Core.Api.meta
+Client/Assets/Plugins/*/System.Buffers
+Client/Assets/Plugins/*/System.Buffers.meta
+Client/Assets/Plugins/*/System.Memory
+Client/Assets/Plugins/*/System.Memory.meta
+Client/Assets/Plugins/*/System.Runtime.CompilerServices.Unsafe
+Client/Assets/Plugins/*/System.Runtime.CompilerServices.Unsafe.meta
+Client/Assets/Plugins/*/System.Runtime.CompilerServices.Unsafe.meta
 
 # Client
 #Client/
