@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  ftp:
+    #image: stilliard/pure-ftpd:hardened
+    image: stilliard/pure-ftpd
+
+    #build: ./
+    container_name: ftp
+
+    # ポート設定 (ホストポート:仮想ポート)
+    ports:
+      # 20,21番のポートはデータ制御のやり取りで使われるポートらしい。暗黙の了解？
+      - "21:21"
+      - "20:20"
+      - "30000-30009:30000-30009"
+
+    environment:
+      # 公開時はグローバルIP
+      PUBLICHOST: 127.0.0.1
+      #PUBLICHOST: localhost
+      FTP_USER_NAME: root
+      FTP_USER_PASS: admin
+      FTP_USER_HOME: /var/ftp/
+
+      # 
+      #ADDED_FLAGS: "--tls=2"
+
+    
+    # ホストのディレクトリ:マウント先のディレクトリ
+    volumes:
+      - ./mnt/:/var/ftp/
+      # 設定ファイル.
+      #/etc/pure-ftpd/pure-ftpd.conf
+
+    #command: 
+

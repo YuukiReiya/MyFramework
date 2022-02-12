@@ -53,3 +53,10 @@ Setup/
 
 # Github管理から外すフォルダ
 Exclusion/
+
+# FTP(リソース用サーバー)
+# マウント元(AssetBundle等 必要なら外すでOK)
+Server/FTP/mnt
+
+# アセットバンドル.
+Client/AssetBundles
