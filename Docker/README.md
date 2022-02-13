@@ -9,7 +9,7 @@ $PWD
 
 ## Docker
 
-```
+```docker
 
 // イメージにタグを付けてビルド.
 docker image build -t <タグ名> <Dockerfileのパス>
@@ -25,9 +25,11 @@ $docker
 // マウント情報とか見る.
 $docker inspect <コンテナID/コンテナ名>
 
+# マウント部分の抽出
+docker inspect --format='{{.Mounts}}' コンテナ名 |  tr " " "\n"
+
 // コンテナ起動.
 docker container run <イメージ> [--name <名前> -d]
-
 --name:コンテナ名を付ける.コンテナIDを使わずに名前で解決出来るので便利。
 -d:デーモン(バックグラウンド)実行。
 
