@@ -60,3 +60,4 @@ Server/FTP/mnt
 
 # アセットバンドル.
 Client/AssetBundles
+Server/WEB/mnt/html/AssetBundles

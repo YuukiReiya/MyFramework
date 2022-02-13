@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  resources:
+    image: httpd
+    build:
+      context: ../../
+      dockerfile: ./Server/WEB/Dockerfile
+
+    container_name: web
+
+    # ポート設定 (ホストポート:仮想ポート)
+    ports:
+      - "8080:80"
+
+    # ホストのディレクトリ:マウント先のディレクトリ
+    volumes:
+      - ./mnt/html:/usr/local/apache2/htdocs/
