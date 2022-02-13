@@ -14,7 +14,7 @@ $PWD
 // イメージにタグを付けてビルド.
 docker image build -t <タグ名> <Dockerfileのパス>
 例:カレントディレクトリにあるDockerfileからsampleというタグ名を付けてイメージをビルド.
-$docker image build -t sample .
+$docker image build -t sample ./
 
 // イメージをリスト表示.
 $docker image ls
@@ -22,8 +22,18 @@ $docker image ls
 // イメージをリスト表示.
 $docker 
 
+// マウント情報とか見る.
+$docker inspect <コンテナID/コンテナ名>
+
 // コンテナ起動.
-docker container run <イメージ>
+docker container run <イメージ> [--name <名前> -d]
+
+--name:コンテナ名を付ける.コンテナIDを使わずに名前で解決出来るので便利。
+-d:デーモン(バックグラウンド)実行。
+
+// 実行中のコンテナに入る.
+$docker container exec -it <コンテナID/コンテナ名> /bin/bash
+
 ```
 
 
