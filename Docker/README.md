@@ -22,6 +22,18 @@ $docker image ls
 // イメージをリスト表示.
 $docker 
 
+// 使っていない系を削除するコマンド.
+$docker <コマンド> prune
+
+// 使用していないイメージを削除.
+$docker image prune
+
+// 使用していないコンテナを削除.
+$docker container prune
+
+// 使用していないボリュームを削除.
+$docker volume prune
+
 // マウント情報とか見る.
 $docker inspect <コンテナID/コンテナ名>
 
