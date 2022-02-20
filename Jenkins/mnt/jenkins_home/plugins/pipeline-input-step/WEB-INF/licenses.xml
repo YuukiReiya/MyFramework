@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='pipeline-input-step' version='446.vf27b_0b_83500e'><l:dependency name='Pipeline: Input Step' groupId='org.jenkins-ci.plugins' artifactId='pipeline-input-step' version='446.vf27b_0b_83500e' url='https://github.com/jenkinsci/pipeline-input-step-plugin'><l:description>The Jenkins Plugins Parent POM Project</l:description><l:license name='MIT License' url='https://opensource.org/licenses/MIT'/></l:dependency></l:dependencies>

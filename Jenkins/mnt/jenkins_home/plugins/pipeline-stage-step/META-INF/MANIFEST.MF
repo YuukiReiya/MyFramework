@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Hudson-Version: 2.222.4
+Plugin-Dependencies: workflow-api:2.46,workflow-step-api:2.23
+Implementation-Title: pipeline-stage-step
+Long-Name: Pipeline: Stage Step
+Implementation-Version: 291.vf0a8a7aeeb50
+Group-Id: org.jenkins-ci.plugins
+Minimum-Java-Version: 1.8
+Plugin-License-Name: MIT License
+Specification-Title: The Jenkins Plugins Parent POM Project
+Plugin-ScmUrl: https://github.com/jenkinsci/pipeline-stage-step-plugin
+Plugin-Version: 291.vf0a8a7aeeb50
+Jenkins-Version: 2.222.4
+Url: https://github.com/jenkinsci/pipeline-stage-step-plugin
+Short-Name: pipeline-stage-step
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Plugin-Developers: 
+Extension-Name: pipeline-stage-step
+Build-Jdk-Spec: 1.8
+Created-By: Maven Archiver 3.5.1
+

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Hudson-Version: 2.249.1
+Plugin-Dependencies: workflow-api:2.47,workflow-scm-step:2.13,workflow
+ -step-api:2.24,workflow-support:3.8,scm-api:2.6.5,script-security:1.7
+ 8,structs:1.23,support-core:2.43;resolution:=optional,ace-editor:1.1
+Implementation-Title: workflow-cps
+Long-Name: Pipeline: Groovy
+Implementation-Version: 2659.v52d3de6044d0
+Group-Id: org.jenkins-ci.plugins.workflow
+Minimum-Java-Version: 1.8
+Plugin-License-Name: MIT License
+Specification-Title: The Jenkins Plugins Parent POM Project
+Plugin-ScmUrl: https://github.com/jenkinsci/workflow-cps-plugin
+Plugin-Version: 2659.v52d3de6044d0
+Jenkins-Version: 2.249.1
+Url: https://github.com/jenkinsci/workflow-cps-plugin
+Short-Name: workflow-cps
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Compatible-Since-Version: 2.18
+Plugin-Developers: 
+Extension-Name: workflow-cps
+Build-Jdk-Spec: 1.8
+Created-By: Maven Archiver 3.5.1
+
