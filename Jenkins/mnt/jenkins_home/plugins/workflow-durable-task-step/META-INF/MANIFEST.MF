@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Hudson-Version: 2.303.3
+Plugin-Dependencies: workflow-api:1108.v57edf648f5d4,workflow-step-api
+ :622.vb_8e7c15b_c95a_,workflow-support:804.vba10a18a1476,durable-task
+ :493.v195aefbb0ff2,scm-api:2.6.5,script-security:1118.vba21ca2e3286,s
+ tructs:308.v852b473a2b8c
+Implementation-Title: workflow-durable-task-step
+Long-Name: Pipeline: Nodes and Processes
+Implementation-Version: 1121.va_65b_d2701486
+Group-Id: org.jenkins-ci.plugins.workflow
+Minimum-Java-Version: 1.8
+Plugin-License-Name: MIT License
+Specification-Title: Pipeline steps locking agents and workspaces, and
+  running external processes that may survive a Jenkins restart or age
+ nt reconnection.
+Plugin-ScmUrl: https://github.com/jenkinsci/workflow-durable-task-step
+ -plugin
+Plugin-Version: 1121.va_65b_d2701486
+Jenkins-Version: 2.303.3
+Url: https://github.com/jenkinsci/workflow-durable-task-step-plugin
+Short-Name: workflow-durable-task-step
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Compatible-Since-Version: 2.40
+Plugin-Developers: 
+Extension-Name: workflow-durable-task-step
+Build-Jdk-Spec: 1.8
+Created-By: Maven Archiver 3.5.1
+
