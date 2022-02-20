@@ -41,9 +41,10 @@ $docker inspect <コンテナID/コンテナ名>
 docker inspect --format='{{.Mounts}}' コンテナ名 |  tr " " "\n"
 
 // コンテナ起動.
-docker container run <イメージ> [--name <名前> -d]
+docker container run <イメージ> [--name <名前> -d　-p <ポート番号>:<ポート番号>]
 --name:コンテナ名を付ける.コンテナIDを使わずに名前で解決出来るので便利。
 -d:デーモン(バックグラウンド)実行。
+-p:左側がホストOS側のポート番号、右側がコンテナ内のポート番号
 
 // 実行中のコンテナに入る.
 $docker container exec -it <コンテナID/コンテナ名> /bin/bash
