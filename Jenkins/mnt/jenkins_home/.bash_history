@@ -1,0 +1,2 @@
+echo hoge
+exit
