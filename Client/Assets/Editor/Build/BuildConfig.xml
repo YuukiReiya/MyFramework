@@ -7,14 +7,18 @@
         *.unity
     -->
     <Scenes>
-        <scene></scene>
+        <scene>Assets/Scenes/SampleScene.unity</scene>
     </Scenes>
 
     <Configs>
         <Config>
-            <platform></platform>
-            <output></output>
-            <options></options>
+            <platform>Windows</platform>
+            <!-- 
+                .sln以下に含められない。
+                .exeの拡張子まで指定する必要がある。
+            -->
+            <output>../Exe/CL/Client.exe</output>
+            <options>0</options>
         </Config>
             
     </Configs>

@@ -31,14 +31,18 @@ public class BuildCommand
         var scenes = root.Element(ScenesTag).Elements().Select(x => x.Value).ToArray();
 
         const string configsTag = @"Configs";
+        const string configTag = @"Config";
         const string platformTag = @"platform";
         const string outputTag = @"output";
         const string optionTag = @"options";
         bool resultContains = false;
-        foreach (var config in root.Elements(configsTag))
+        foreach (var element in root.Elements(configsTag))
         {
-            var outputDir = config.Element(outputTag).Value;
-            if (!Directory.Exists(outputDir))
+            var config = element.Element(configTag);
+            var outputPathWithExtension = config.Element(outputTag).Value;
+
+            var outputDir = Path.GetDirectoryName(outputPathWithExtension);
+            if(!Directory.Exists(outputDir))
             {
                 Directory.CreateDirectory(outputDir);
             }
@@ -62,17 +66,17 @@ public class BuildCommand
             var option = (BuildOptions)value;
             var report = BuildPipeline.BuildPlayer(
                scenes,
-               outputDir,
+               outputPathWithExtension,
                platform,
                option);
 
             var msg = report.summary.result switch
             {
-                BuildResult.Succeeded => $"[BuildResult]Success.{Environment.NewLine}出力先:{outputDir}{Environment.NewLine}Platform:{platform}{Environment.NewLine}Options:{option}",
-                BuildResult.Cancelled => $"[BuildResult]Warning.{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
-                BuildResult.Failed => $"[BuildResult]Failed.{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
-                BuildResult.Unknown => $"[BuildResult]Unknown.{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
-                _ => $"[BuildResult]default.{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
+                BuildResult.Succeeded => $"[BuildResult]Success.{Environment.NewLine}出力先:{Path.GetFullPath(outputPathWithExtension)}{Environment.NewLine}Platform:{platform}{Environment.NewLine}Options:{option}",
+                BuildResult.Cancelled => $"[BuildResult]Warning.{Environment.NewLine}出力先:{Path.GetFullPath(outputPathWithExtension)}{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
+                BuildResult.Failed => $"[BuildResult]Failed.{Environment.NewLine}出力先:{Path.GetFullPath(outputPathWithExtension)}{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
+                BuildResult.Unknown => $"[BuildResult]Unknown.{Environment.NewLine}出力先:{Path.GetFullPath(outputPathWithExtension)}{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
+                _ => $"[BuildResult]default.{Environment.NewLine}出力先:{Path.GetFullPath(outputPathWithExtension)}{Environment.NewLine}{string.Join($"{Environment.NewLine}", report.steps.Select(x => x.messages))}",
             };
 
             switch (report.summary.result)
@@ -92,6 +96,9 @@ public class BuildCommand
             };
         }
 
-        EditorApplication.Exit(resultContains ? 0 : 1);
+        if (Application.isBatchMode)
+        {
+            EditorApplication.Exit(resultContains ? 0 : 1);
+        }
     }
 }
