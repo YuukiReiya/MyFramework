@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="SHIFT_JIS"?>
+
+<Root>
+    <!-- 
+        ビルド対象のシーン.
+        indexは上から順.
+        *.unity
+    -->
+    <Scenes>
+        <scene></scene>
+    </Scenes>
+
+    <Configs>
+        <Config>
+            <platform></platform>
+            <output></output>
+            <options></options>
+        </Config>
+            
+    </Configs>
+</Root>

@@ -65,6 +65,7 @@ namespace API.Process
         //  ビルド前実行
         public void OnPreprocessBuild(BuildReport report)
         {
+            Debug.Log($"[BuildEvent]Preprocess build event.");
             if(IsDevelopment(report))
             {
 
@@ -74,6 +75,7 @@ namespace API.Process
         //ビルド後実行
         public void OnPostprocessBuild(BuildReport report)
         {
+            Debug.Log($"[BuildEvent]Postprocess build event.");
             if(IsDevelopment(report))
             {
 
