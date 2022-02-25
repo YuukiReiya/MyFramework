@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="SHIFT_JIS"?>
+
+<Root>
+    <!-- 
+        ビルド対象のシーン.
+        indexは上から順.
+        *.unity
+    -->
+    <Scenes>
+        <scene>Assets/Scenes/SampleScene.unity</scene>
+    </Scenes>
+
+    <Configs>
+        <Config>
+            <platform>Windows</platform>
+            <!-- 
+                .sln以下に含められない。
+                .exeの拡張子まで指定する必要がある。
+            -->
+            <output>../Exe/CL/Client.exe</output>
+            <options>0</options>
+        </Config>
+            
+    </Configs>
+</Root>
