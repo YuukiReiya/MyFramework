@@ -1,0 +1,91 @@
+#!/bin/sh
+
+set -u
+echo "pre commit process!"
+
+# 差分ファイルを抽出.
+
+# --cached
+# ステージ(add)したもの.
+
+# --diff-filter=ACMR
+# A : 追加
+# C : コピー
+# M : 修正
+# R : リネーム
+# D : 削除
+# ※ 削除ファイルのみ検出したい場合なんかは'--diff-filter=D'
+# https://qiita.com/shokei125/items/3403f1756f71b3a902ca
+
+# *.c *.cs *.cpp 3つが対象.
+#files=`git diff --cached --diff-filter=ACMR --name-only  HEAD | grep -e "\.c$" -e "\.cs$" -e "\.cpp$"`
+
+# pre-commit実行時のパスを調べる.
+#echo `pwd` #./Template-OnlineProject ディレクトリ関係ないようでどこから呼んでもこれっぽかった。
+
+# ↑パスが変わるようなら不変の場所を指定しようと思ってhooksにまとめて突っ込もうと思った。← 必要ないみたいだが。
+# optionファイルとastyleのバイナリをhooksフォルダにまとめて突っ込んだのでそこのディレクトリパスを取得.
+#RELATIVE_DIRECTORY=`dirname $0`
+#echo $RELATIVE_DIRECTORY
+
+# CSharpとCplusplusでフォーマットオプションを変えたいことを考え別に分ける.
+
+# CSharp
+# $(<UNIXコマンド>)
+# `<UNIXコマンド>`
+# ↑コマンド置換。同じ意味。
+CSHARP_FILES=$(git diff --cached --diff-filter=ACMR --name-only  HEAD | grep -e "\.cs$")
+
+
+ASTYLE_OPTION_PATH=ArtisticStyle/astyle_options_csharp
+# Windows
+if [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
+    ASTYLE_PATH=ArtisticStyle/Astyle.exe
+
+    # ↓./hooks/以下にぶち込む場合。わざわざいれなくてもいいみたいなのでコメントアウト。
+    #ASTYLE_PATH=$RELATIVE_DIRECTORY/Astyle.exe
+# 他(Linux?)
+else
+    ASTYLE_PATH=ArtisticStyle/astyle
+fi
+
+result=0
+
+# C#
+# for loop
+for CS_FILE in ${CSHARP_FILES}
+do
+
+    # .tempの一時ファイル作成.
+    tmp=$(mktemp)
+
+    # フォーマッターをかける.
+	# ./astyle : パス通してないのでディレクトリ込みで指定.
+	# --options : 反映させるオプションファイルを指定. (csとcppで分ける.)
+	# --formatted : フォーマットされたファイルのみを表示.
+	# < : リダイレクト。
+
+    #↓参考元
+    #astyle --options=astyle_options_c --formatted < "${file}" > ${tmp}
+
+    # 一時ファイルにフォーマット前の状態を退避.
+    cat ${CS_FILE} > ${tmp}
+    $ASTYLE_PATH --options=ArtisticStyle/astyle_options_csharp --formatted ${CS_FILE}
+        # 一時ファイルとフォーマット後のファイルを比較.
+        if ! cmp -s "${CS_FILE}" ${tmp}; then
+
+        echo formatted file:${CS_FILE}
+        result=1
+    fi
+
+    rm ${tmp}
+done
+
+# C++
+# 必要に応じて…
+
+# 0:OK
+# 1:Error
+exit ${result}
+
+# 参考:http://float1251.github.io/blog/2018/03/06/astyle.html
