@@ -1,0 +1,34 @@
+Started by an SCM change
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/Github連携テスト
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/Github連携テスト/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.JenkinsGithub連携テスト.url https://github.com/YuukiReiya/Template-OnlineProject.git # timeout=10
+Fetching upstream changes from https://github.com/YuukiReiya/Template-OnlineProject.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+ > git fetch --tags --force --progress -- https://github.com/YuukiReiya/Template-OnlineProject.git "+refs/pull/*:refs/remotes/origin/pr/*" # timeout=10
+Seen branch in repository JenkinsGithub連携テスト/develop/projectsetting
+Seen branch in repository JenkinsGithub連携テスト/fix/chat
+Seen branch in repository JenkinsGithub連携テスト/master
+Seen branch in repository JenkinsGithub連携テスト/merge/test
+Seen branch in repository JenkinsGithub連携テスト/test/branch_merge_web
+Seen branch in repository JenkinsGithub連携テスト/test/parent_wipscrollview
+Seen branch in repository JenkinsGithub連携テスト/wip/scrollView
+Seen 7 remote branches
+ > git show-ref --tags -d # timeout=10
+Multiple candidate revisions
+Scheduling another build to catch up with Github連携テスト
+Checking out Revision 96f5d99f39eca01a5d2e6d244542bff69738dae5 (JenkinsGithub連携テスト/merge/test)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 96f5d99f39eca01a5d2e6d244542bff69738dae5 # timeout=10
+Commit message: "差分作成"
+First time build. Skipping changelog.
+[Github連携テスト] $ /bin/sh -xe /tmp/jenkins5835521816385591355.sh
++ echo /var/jenkins_home/workspace/Github連携テスト
+/var/jenkins_home/workspace/Github連携テスト
++ echo Github連携テスト
+Github連携テスト
+Finished: SUCCESS

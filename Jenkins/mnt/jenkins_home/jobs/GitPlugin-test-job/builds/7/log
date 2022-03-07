@@ -1,0 +1,36 @@
+Started by an SCM change
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/GitPlugin-test-job
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/GitPlugin-test-job/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/YuukiReiya/Template-OnlineProject # timeout=10
+Fetching upstream changes from https://github.com/YuukiReiya/Template-OnlineProject
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+ > git fetch --tags --force --progress -- https://github.com/YuukiReiya/Template-OnlineProject +refs/heads/*:refs/remotes/origin/* # timeout=10
+Seen branch in repository origin/Develop/ColorScheme
+Seen branch in repository origin/Develop/ci/jenkins
+Seen branch in repository origin/Develop/projectsetting
+Seen branch in repository origin/fix/chat
+Seen branch in repository origin/master
+Seen branch in repository origin/merge/test
+Seen branch in repository origin/test/branch_merge_web
+Seen branch in repository origin/test/parent_wipscrollview
+Seen branch in repository origin/wip/scrollView
+Seen 9 remote branches
+ > git show-ref --tags -d # timeout=10
+Multiple candidate revisions
+Scheduling another build to catch up with GitPlugin-test-job
+Checking out Revision 96f5d99f39eca01a5d2e6d244542bff69738dae5 (origin/merge/test)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 96f5d99f39eca01a5d2e6d244542bff69738dae5 # timeout=10
+Commit message: "差分作成"
+First time build. Skipping changelog.
+[GitPlugin-test-job] $ /bin/bash /tmp/jenkins1262833723045053080.sh
+DIRECTORY:/var/jenkins_home
+REMOTE_BRANCH:origin/merge/test
+LOCAL_BRANCH:
+LAST_COMMIT_HASH:
+Finished: SUCCESS

@@ -1,0 +1,34 @@
+Started by user [8mha:////4FQMZ3XIkwtDGrrPPhTHceBP6tXvWFLhmCkr4mUc52AJAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/GitPlugin-test-job
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/YuukiReiya/Template-UnityProject
+ > git init /var/jenkins_home/workspace/GitPlugin-test-job # timeout=10
+Fetching upstream changes from https://github.com/YuukiReiya/Template-UnityProject
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+ > git fetch --tags --force --progress -- https://github.com/YuukiReiya/Template-UnityProject +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/YuukiReiya/Template-UnityProject # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+Seen branch in repository origin/Develop/ColorScheme
+Seen branch in repository origin/master
+Seen 2 remote branches
+ > git show-ref --tags -d # timeout=10
+Checking out Revision c402fd1f320897aebdb6f9a107646af5c778debf (origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f c402fd1f320897aebdb6f9a107646af5c778debf # timeout=10
+Commit message: "【environmet】差分更新"
+First time build. Skipping changelog.
+[GitPlugin-test-job] $ /bin/sh -xe /tmp/jenkins2604097821784565896.sh
++ echo DIRECTORY:/var/jenkins_home
+DIRECTORY:/var/jenkins_home
++ echo REMOTE_BRANCH:origin/master
+REMOTE_BRANCH:origin/master
++ echo LOCAL_BRANCH:
+LOCAL_BRANCH:
++ echo LAST_COMMIT_HASH:
+LAST_COMMIT_HASH:
+Finished: SUCCESS
