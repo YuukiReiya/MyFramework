@@ -1,0 +1,36 @@
+Started by user [8mha:////4FQMZ3XIkwtDGrrPPhTHceBP6tXvWFLhmCkr4mUc52AJAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/GitPlugin-test-job
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/GitPlugin-test-job/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/YuukiReiya/Template-OnlineProject # timeout=10
+Fetching upstream changes from https://github.com/YuukiReiya/Template-OnlineProject
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+ > git fetch --tags --force --progress -- https://github.com/YuukiReiya/Template-OnlineProject +refs/heads/*:refs/remotes/origin/* # timeout=10
+Seen branch in repository origin/Develop/ColorScheme
+Seen branch in repository origin/Develop/ci/jenkins
+Seen branch in repository origin/Develop/projectsetting
+Seen branch in repository origin/fix/chat
+Seen branch in repository origin/master
+Seen branch in repository origin/merge/test
+Seen branch in repository origin/test/branch_merge_web
+Seen branch in repository origin/test/parent_wipscrollview
+Seen branch in repository origin/wip/scrollView
+Seen 9 remote branches
+ > git show-ref --tags -d # timeout=10
+Multiple candidate revisions
+Scheduling another build to catch up with GitPlugin-test-job
+Checking out Revision 1947884e585c206385870f3d355c13ee4b79b61c (origin/Develop/ColorScheme)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 1947884e585c206385870f3d355c13ee4b79b61c # timeout=10
+Commit message: "【bugfix】バグ修正に伴うDLLの更新"
+First time build. Skipping changelog.
+[GitPlugin-test-job] $ /bin/bash /tmp/jenkins2021847389776671788.sh
+DIRECTORY:/var/jenkins_home
+REMOTE_BRANCH:origin/Develop/ColorScheme
+LOCAL_BRANCH:
+LAST_COMMIT_HASH:
+Finished: SUCCESS

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ogondza
+Build-Jdk: 1.8.0_275
+Extension-Name: ghprb
+Specification-Title: The Jenkins Plugins Parent POM Project
+Implementation-Title: ghprb
+Implementation-Version: 1.42.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ghprb
+Long-Name: GitHub Pull Request Builder
+Url: https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+b
+ uilder+plugin
+Plugin-Version: 1.42.2
+Hudson-Version: 2.7
+Jenkins-Version: 2.7
+Plugin-Dependencies: build-flow-plugin:0.20;resolution:=optional,githu
+ b:1.27.0,bouncycastle-api:2.16.1,credentials:2.1.14,git:3.3.1,github-
+ api:1.92,job-dsl:1.63;resolution:=optional,matrix-project:1.11,plain-
+ credentials:1.4,scm-api:2.1.0,script-security:1.25,structs:1.9,token-
+ macro:2.1;resolution:=optional
+Plugin-Developers: Sam Gleske:sag47:sam.mxracer@gmail.com
+

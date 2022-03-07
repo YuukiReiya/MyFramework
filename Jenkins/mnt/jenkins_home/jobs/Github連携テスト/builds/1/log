@@ -1,0 +1,21 @@
+Started by user [8mha:////4FQMZ3XIkwtDGrrPPhTHceBP6tXvWFLhmCkr4mUc52AJAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/Github連携テスト
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/YuukiReiya/Template-OnlineProject.git
+ > git init /var/jenkins_home/workspace/Github連携テスト # timeout=10
+Fetching upstream changes from https://github.com/YuukiReiya/Template-OnlineProject.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+ > git fetch --tags --force --progress -- https://github.com/YuukiReiya/Template-OnlineProject.git +refs/heads/*:refs/remotes/JenkinsGithub連携テスト/* # timeout=10
+ > git config remote.JenkinsGithub連携テスト.url https://github.com/YuukiReiya/Template-OnlineProject.git # timeout=10
+ > git config --add remote.JenkinsGithub連携テスト.fetch +refs/heads/*:refs/remotes/JenkinsGithub連携テスト/* # timeout=10
+ > git config remote.JenkinsGithub連携テスト.url https://github.com/YuukiReiya/Template-OnlineProject.git # timeout=10
+Fetching upstream changes from https://github.com/YuukiReiya/Template-OnlineProject.git
+ > git fetch --tags --force --progress -- https://github.com/YuukiReiya/Template-OnlineProject.git "+refs/pull/*:refs/remotes/origin/pr/*" # timeout=10
+ > git rev-parse JenkinsGithub連携テスト/${sha1}^{commit} # timeout=10
+ > git rev-parse ${sha1}^{commit} # timeout=10
+ERROR: Couldn't find any revision to build. Verify the repository and branch configuration for this job.
+Finished: FAILURE
