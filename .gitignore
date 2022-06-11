@@ -30,6 +30,7 @@ Client/UpgradeLog.htm
 Client/Packages/
 Client/ProjectSettings/
 Client/UserSettings/
+Client/Assets/Temp
 
 # gRPC
 gRPC/*
