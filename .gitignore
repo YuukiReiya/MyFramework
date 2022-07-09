@@ -43,7 +43,7 @@ Server/Server/bin/
 Server/Server/obj/
 
 # Setup
-Setup/
+#Setup/
 
 # Managed Plugin (.NET Standard)
 #ManagedPlugins/*
