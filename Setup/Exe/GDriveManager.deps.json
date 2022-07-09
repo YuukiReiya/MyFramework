@@ -1,0 +1,119 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "GDriveManager/1.0.0": {
+        "dependencies": {
+          "Google.Apis.Drive.v3": "1.50.0.2250"
+        },
+        "runtime": {
+          "GDriveManager.dll": {}
+        }
+      },
+      "Google.Apis/1.50.0": {
+        "dependencies": {
+          "Google.Apis.Core": "1.50.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.dll": {
+            "assemblyVersion": "1.50.0.0",
+            "fileVersion": "1.50.0.0"
+          }
+        }
+      },
+      "Google.Apis.Auth/1.50.0": {
+        "dependencies": {
+          "Google.Apis": "1.50.0",
+          "Google.Apis.Core": "1.50.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.Auth.PlatformServices.dll": {
+            "assemblyVersion": "1.50.0.0",
+            "fileVersion": "1.50.0.0"
+          },
+          "lib/netstandard2.0/Google.Apis.Auth.dll": {
+            "assemblyVersion": "1.50.0.0",
+            "fileVersion": "1.50.0.0"
+          }
+        }
+      },
+      "Google.Apis.Core/1.50.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.Core.dll": {
+            "assemblyVersion": "1.50.0.0",
+            "fileVersion": "1.50.0.0"
+          }
+        }
+      },
+      "Google.Apis.Drive.v3/1.50.0.2250": {
+        "dependencies": {
+          "Google.Apis": "1.50.0",
+          "Google.Apis.Auth": "1.50.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Google.Apis.Drive.v3.dll": {
+            "assemblyVersion": "1.50.0.2250",
+            "fileVersion": "1.50.0.2250"
+          }
+        }
+      },
+      "Newtonsoft.Json/12.0.3": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.3.23909"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GDriveManager/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Google.Apis/1.50.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qV0wmPVM03YU2dEi8uir+9Ee8MwoH8ELwMVbDX3fuf2NUbweY43fAQ7P20xbq/4nhgOP/maWzrjNlw8WkD4hyw==",
+      "path": "google.apis/1.50.0",
+      "hashPath": "google.apis.1.50.0.nupkg.sha512"
+    },
+    "Google.Apis.Auth/1.50.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-y6hqXcDzTA5tj3Qasr97anpIc+gGJC9QlWJnGSRvp7o4/c4b4Bd5tBgqyJKhgfBMo+HugXGcYh17Kvm5SB3v6g==",
+      "path": "google.apis.auth/1.50.0",
+      "hashPath": "google.apis.auth.1.50.0.nupkg.sha512"
+    },
+    "Google.Apis.Core/1.50.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-E/ioNStr2z0LXXAaGR7bnbRQqozjFb12mi5zs/Bm4c2ZH9uoKOxz9FbQkNRq4R3yHif5gxt3nh8Ei7g9qRiYxQ==",
+      "path": "google.apis.core/1.50.0",
+      "hashPath": "google.apis.core.1.50.0.nupkg.sha512"
+    },
+    "Google.Apis.Drive.v3/1.50.0.2250": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wsC8g6AagAmyRL+wK16yjWbeps4xi4QAI/IE01ng667rUsiCrhLqbuOuCbNkQoyGDYCyCjpiGFxukzU0AVR+Kw==",
+      "path": "google.apis.drive.v3/1.50.0.2250",
+      "hashPath": "google.apis.drive.v3.1.50.0.2250.nupkg.sha512"
+    },
+    "Newtonsoft.Json/12.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg==",
+      "path": "newtonsoft.json/12.0.3",
+      "hashPath": "newtonsoft.json.12.0.3.nupkg.sha512"
+    }
+  }
+}
