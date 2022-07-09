@@ -6,16 +6,16 @@ REM ダウンロードして解凍し、プロジェクトにコピーする手法をとる。
 REM *********************************************************
 
 REM .ini 解析を行うバッチ
-set INI_ANALYZER_BAT=../bat/GetIni.bat
+set INI_ANALYZER_BAT=./GetIni.bat
 
 REM .zip 解凍/圧縮を扱うバッチ
-set ZIP_BAT=../bat/zip.bat
+set ZIP_BAT=./zip.bat
 
 REM 読み込むiniファイル
-set READ_INI=./Setup.ini
+set READ_INI=./Setup/Setup.ini
 
 REM 解凍対象のファイルパス
-::set READ_ZIP_PATH=./ProjectSetting.zip
+rem set READ_ZIP_PATH=./ProjectSetting.zip
 
 REM 解凍元ファイルの削除 true:!=0
 set REPLACEMENT_DELETE=1
@@ -41,6 +41,7 @@ call %INI_ANALYZER_BAT% :READ_INI_VAL "COMMON_PATH" "ROOT_ZIP" READ_ZIP_PATH %RE
 
 REM 解凍するファイルが無かったら解凍も糞もない。
 if not exist "%READ_ZIP_PATH%" (
+    echo CURDIR:%~dp0
     echo パス:"%READ_ZIP_PATH%" が存在しません。
     pause
     exit /b
@@ -48,6 +49,7 @@ if not exist "%READ_ZIP_PATH%" (
 
 REM 解凍先のファイルが既に存在していたら解凍できない。
 if exist "%TEMP_FILE%" (
+    echo CURDIR:%~dp0
     echo パス:"%TEMP_FILE%" が既に存在しているため解凍できません。
     pause
     exit /b

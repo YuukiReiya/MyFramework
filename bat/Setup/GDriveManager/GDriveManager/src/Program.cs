@@ -146,6 +146,11 @@ namespace DriveQuickstart
                     if (!StorageDataDic.Any(e => e.Value == data.Item2)) continue;
                     // ファイル名がiniの[DOWNLOAD]セクションに入っているものか
                     var file = StorageDataDic.First(e => e.Value == data.Item2);
+
+                    if (showFlag != "0")
+                    {
+                        Console.WriteLine($"{Environment.NewLine}DOWNLOAD_DICTIONARY:{data.Item3}\nFULL_PATH:{Path.GetFullPath(data.Item3)}{Environment.NewLine}");
+                    }
                     //ダウンロード
                     Download(file.Key, data.Item3);
                 }

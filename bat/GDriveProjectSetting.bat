@@ -9,18 +9,20 @@ REM エラーになるため必ず立ち上げる前、もしくは閉じてから実行すること。
 REM **************************************************************
 
 REM 実行ファイルの場所に飛ぶ
-cd Exe/
+cd ./Setup/Exe/
 
 REM GDriveからプロジェクトを落としてくる
-call GDrive_File_Download.exe
+rem call GDrive_File_Download.exe
+call GDriveManager.exe
 
 REM バッチのあるフォルダに戻る
-cd ../
+cd ../../
 
 REM 落としてきたファイルを展開し、該当フォルダへ複製
 call ProjectSetting.bat
 
-set ROOT_ZIP=ProjectSetting.zip
+set ROOT_ZIP=./ProjectSetting.zip
 
 REM 落としてきたファイルを削除する
 if exist "%ROOT_ZIP%" del "%ROOT_ZIP%" /s /q
+pause
