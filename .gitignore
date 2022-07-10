@@ -26,10 +26,10 @@ Client/Library
 Client/Logs
 Client/obj
 Client/Temp
-Client/UpgradeLog.htm
-Client/Packages/
-Client/ProjectSettings/
-Client/UserSettings/
+#Client/UpgradeLog.htm
+#Client/Packages/
+#Client/ProjectSettings/
+#Client/UserSettings/
 
 # gRPC
 gRPC/*
