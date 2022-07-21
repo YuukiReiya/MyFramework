@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="SHIFT_JIS"?>
+
+<Root>
+    <!-- 
+        audio file.
+        indexは上から順.
+    -->
+    <Resources>
+        <Resource>
+            <enable>true</enable>
+            <uri>%USERPROFILE%\Documents\明日を漁れ.mp3</uri>
+        </Resource>
+        <Resource>
+            <enable>true</enable>
+            <uri>%USERPROFILE%\Documents\LAMUNATION！VOCAL_COLLECTION.wav</uri>
+        </Resource>
+    </Resources>
+</Root>

@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\Common\Pool\ObjectPoolCollectionBase.cs" />
     <Compile Include="Assets\Scripts\Protocol\CSharp\Protocol.cs" />
     <Compile Include="Assets\Scripts\Masters\Table\Importer\TableImporter.cs" />
+    <Compile Include="Assets\Scripts\Expansions\Windows\WindowsExpansion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalResources\Masters.xml" />
