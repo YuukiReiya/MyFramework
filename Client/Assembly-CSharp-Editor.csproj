@@ -66,9 +66,12 @@
     <Compile Include="Assets\Editor\Build\BuildCommand.cs" />
     <Compile Include="Assets\Editor\AssetPostprocessor\AssetPostprocessorImpl.cs" />
     <Compile Include="Assets\Editor\ScriptEncoder\ScriptEncoder.cs" />
+    <Compile Include="Assets\Editor\Sound\AudioManager.inspector.cs" />
     <Compile Include="Assets\Editor\AssetBundle\AssetBundleBuildWindow.cs" />
     <Compile Include="Assets\Editor\Expansion\SerializedProperty\SerializedPropertyExpansion.cs" />
+    <Compile Include="Assets\Editor\Sound\AudioChannel.inspector.cs" />
     <Compile Include="Assets\Editor\EmptyFolderKeep\FolderKeep.cs" />
+    <Compile Include="Assets\Editor\Expansion\Inspector\List.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Editor\Build\BuildConfig.xml" />
@@ -765,8 +768,14 @@
     <Reference Include="Unity.Services.Core.Environments">
       <HintPath>Library\ScriptAssemblies\Unity.Services.Core.Environments.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Sysroot.Linux_x86_64">
+      <HintPath>Library\ScriptAssemblies\Unity.Sysroot.Linux_x86_64.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
+      <HintPath>Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
@@ -788,6 +797,9 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.SysrootPackage.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.SysrootPackage.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Services.Core">
       <HintPath>Library\ScriptAssemblies\Unity.Services.Core.dll</HintPath>
