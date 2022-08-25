@@ -21,7 +21,7 @@ namespace Downloader
             }
             if (string.IsNullOrEmpty(documentXMLPath))
             {
-                documentXMLPath = "../../../res/config.xml";
+                documentXMLPath = "../../../../res/config.xml";
             }
 
             if (!File.Exists(documentXMLPath))

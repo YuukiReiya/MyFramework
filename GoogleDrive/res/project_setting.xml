@@ -2,15 +2,15 @@
 <!-- 絶対パスの方が望ましい. -->
 <config>
 	<!-- credentials.json -->
-	<credentials>../../../res/credentials.json</credentials>
+	<credentials>../../../../res/credentials.json</credentials>
 	<!-- token.json (フォルダ) -->
-	<token>../../../res/token.json/</token>
+	<token>../../../../res/token.json/</token>
 	<!-- 一時保存 -->
 	<temp>../../../temp</temp>
 	<!-- Unity Client Folder -->
-	<client>../../../../../Client/</client>
+	<client>../../../../../../Client/</client>
 	<!-- Unity Client Assets Folder -->
-	<assets>../../../../Client/Assets</assets>
+	<assets>../../../../../Client/Assets</assets>
 
 	<!-- memo.増やすときは'data'タグ配列を増やす. -->
 	<!-- アップロード関連 -->
@@ -24,9 +24,12 @@
 	<download>
 		<data>
 			<!--ドライブ上のダウンロード対象ファイル(.zip)-->
-			<source>Template-OnlineProject/ProjectSetting/GRPC.zip</source>
+			<!-- <source>Template-OnlineProject/ProjectSetting/GRPC.zip</source> -->
+			<!--Rootディレクトリ読み込まなかったのでカットver.-->
+			<source>ProjectSetting/GRPC.zip</source>
+
 			<!--ローカル上の配置先-->
-			<destination>../../../../Client/Assets/Plugins/</destination>
+			<destination>../../../../../Client/Assets/Plugins/</destination>
 		</data>
 	</download>
 </config>
