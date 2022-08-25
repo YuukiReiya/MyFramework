@@ -2,11 +2,11 @@
 <!-- 絶対パスの方が望ましい. -->
 <config>
 	<!-- credentials.json -->
-	<credentials>../../../res/credentials.json</credentials>
+	<credentials>../../../../res/credentials.json</credentials>
 	<!-- token.json (フォルダ) -->
-	<token>../../../res/token.json/</token>
+	<token>../../../../res/token.json/</token>
 	<!-- 一時保存 -->
-	<temp>../../../temp</temp>
+	<temp>../../../../temp</temp>
 	<!-- Unity Client Folder -->
 	<client>../../../../../Client/</client>
 	<!-- Unity Client Assets Folder -->
@@ -26,7 +26,10 @@
 	<download>
 		<data>
 			<!--ドライブ上のダウンロード対象ファイル(.zip)-->
-			<source>Template-OnlineProject/Exclusion.zip</source>
+			<!-- <source>Template-OnlineProject/Exclusion.zip</source> -->
+			<!--なんかフォルダ読み込まないことがあったのでディレクトリ抜いたver.-->
+			<source>Exclusion.zip</source>
+			
 			<!--ローカル上の配置先-->
 			<destination>../../../../Client/Assets/ExternalResources/Exclusion</destination>
 		</data>

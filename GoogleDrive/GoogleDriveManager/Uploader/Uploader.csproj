@@ -7,12 +7,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>4</WarningLevel>
-    <OutputPath>C:\Users\yuuki\Documents\develop\Template-OnlineProject\GoogleDrive\bin\Debug</OutputPath>
+    <OutputPath>$(SolutionDir)bin\Debug</OutputPath>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>C:\Users\yuuki\Documents\develop\Template-OnlineProject\GoogleDrive\bin\Release</OutputPath>
+    <OutputPath>$(SolutionDir)bin\Release</OutputPath>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
