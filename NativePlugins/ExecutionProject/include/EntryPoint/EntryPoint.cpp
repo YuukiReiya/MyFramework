@@ -9,7 +9,7 @@
 #pragma once
 #include <iostream>
 #include "../../../ExternalDynamicLinkLibrary/include/Sample/Sample.hpp"
-
+#include "../../../ExternalDynamicLinkLibrary/include/lua_wrapper.hpp"
 #define SUCCESS 0
 
 using namespace std;
@@ -23,6 +23,10 @@ using namespace std;
 */
 int main(int argNum, const char* argments) 
 {
+	lua_wrapper lua;
+
+
+
 	//‚Æ‚è‚ ‚¦‚¸‹ó
 	system("pause");
 	return SUCCESS;
