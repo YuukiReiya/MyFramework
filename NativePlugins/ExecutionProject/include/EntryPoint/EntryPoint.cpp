@@ -134,7 +134,7 @@ int main(int argNum, const char* argments)
 	/*
 	* @sa http://marupeke296.com/LUA_No3_Coroutine.html
 	*/
-#if false
+#if true
 
 	lua_State* L = luaL_newstate();
 
@@ -157,7 +157,10 @@ int main(int argNum, const char* argments)
 
 	try
 	{
-		while (lua_resume(L, co, 0, r))
+		while (lua_resume(L,co,0))
+		{
+
+		}
 		{
 
 		}
