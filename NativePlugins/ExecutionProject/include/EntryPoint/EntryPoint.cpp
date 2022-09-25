@@ -62,20 +62,27 @@ int main(int argNum, const char* argments)
 	if (luaL_dofile(lua->get_state(), "resources/lua/test.lua")) {
 		::printf("%s\n", lua_tostring(lua->get_state(), lua_gettop(lua->get_state())));
 		lua_close(lua->get_state());
+		::system("pause");
+
 		return FAILED;
 	}
 #pragma region 外部のluaファイルから変数読込
-#if false
+#if true
 #define SAMPLE_EXTERNAL_LUA_READ
 	//変数読み込み
 	lua_getglobal(lua->get_state(), "wndWidth");
 	lua_getglobal(lua->get_state(), "wndHeight");
 	lua_getglobal(lua->get_state(), "wndName");
+
+	lua->stack_print();
 #endif
 #pragma endregion
 
 #pragma region 外部のluaファイルから関数を呼ぶ
-#if !SAMPLE_EXTERNAL_LUA_READ&&false
+#ifndef SAMPLE_EXTERNAL_LUA_READ
+#if false
+
+
 	// Luaステート内にある"calc関数"を指定
 	lua_getglobal(lua->get_state(), "calc");
 
@@ -120,13 +127,14 @@ int main(int argNum, const char* argments)
 
 	lua->stack_print();
 #endif
+#endif // !SAMPLE_EXTERNAL_LUA_READ
 #pragma endregion
 
 #pragma region コルーチン
 	/*
 	* @sa http://marupeke296.com/LUA_No3_Coroutine.html
 	*/
-#if true
+#if false
 
 	lua_State* L = luaL_newstate();
 

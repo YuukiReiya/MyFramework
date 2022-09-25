@@ -100,12 +100,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ExternalDynamicLinkLibrary.lib;liblua54.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -127,10 +127,11 @@ REM 依存するdllがあるディレクトリ
 set EXTERNAL_DLL_DIR=$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)
 
 REM ディレクトリ内のファイルを全部出力先にコピー
-for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
-    echo $(OUTDIR)%%~nxf
-    copy /y %%f $(OUTDIR)%%~nxf
-)</Command>
+REM for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
+REM     echo $(OUTDIR)%%~nxf
+REM     copy /y %%f $(OUTDIR)%%~nxf
+REM )
+xcopy %EXTERNAL_DLL_DIR% $(OUTDIR) /r /e /y /d</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>ExternalDynamicLinkLibrary.dllを書き出し先にコピーする。</Message>
@@ -144,7 +145,7 @@ for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -152,7 +153,7 @@ for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ExternalDynamicLinkLibrary.lib;liblua54.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -174,10 +175,11 @@ REM 依存するdllがあるディレクトリ
 set EXTERNAL_DLL_DIR=$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)
 
 REM ディレクトリ内のファイルを全部出力先にコピー
-for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
-    echo $(OUTDIR)%%~nxf
-    copy /y %%f $(OUTDIR)%%~nxf
-)</Command>
+REM for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
+REM     echo $(OUTDIR)%%~nxf
+REM     copy /y %%f $(OUTDIR)%%~nxf
+REM )
+xcopy %EXTERNAL_DLL_DIR% $(OUTDIR) /r /e /y /d</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>ExternalDynamicLinkLibrary.dllを書き出し先にコピーする。</Message>
@@ -190,12 +192,12 @@ for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ExternalDynamicLinkLibrary.lib;liblua54.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -217,10 +219,11 @@ REM 依存するdllがあるディレクトリ
 set EXTERNAL_DLL_DIR=$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)
 
 REM ディレクトリ内のファイルを全部出力先にコピー
-for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
-    echo $(OUTDIR)%%~nxf
-    copy /y %%f $(OUTDIR)%%~nxf
-)</Command>
+REM for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
+REM     echo $(OUTDIR)%%~nxf
+REM     copy /y %%f $(OUTDIR)%%~nxf
+REM )
+xcopy %EXTERNAL_DLL_DIR% $(OUTDIR) /r /e /y /d</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>ExternalDynamicLinkLibrary.dllを書き出し先にコピーする。</Message>
@@ -234,7 +237,7 @@ for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\include;$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -242,7 +245,7 @@ for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)ExternalDynamicLinkLibrary\bin\$(Platform)\$(Configuration);$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ExternalDynamicLinkLibrary.lib;liblua54.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -264,10 +267,11 @@ REM 依存するdllがあるディレクトリ
 set EXTERNAL_DLL_DIR=$(SolutionDir)ExternalDynamicLinkLibrary\dll\$(Platform)
 
 REM ディレクトリ内のファイルを全部出力先にコピー
-for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
-    echo $(OUTDIR)%%~nxf
-    copy /y %%f $(OUTDIR)%%~nxf
-)</Command>
+REM for /r %EXTERNAL_DLL_DIR% %%f in (*) do (
+REM     echo $(OUTDIR)%%~nxf
+REM     copy /y %%f $(OUTDIR)%%~nxf
+REM )
+xcopy %EXTERNAL_DLL_DIR% $(OUTDIR) /r /e /y /d</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>ExternalDynamicLinkLibrary.dllを書き出し先にコピーする。</Message>

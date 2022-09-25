@@ -109,7 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -169,7 +169,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -229,7 +229,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -289,7 +289,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
