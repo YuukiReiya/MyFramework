@@ -33,6 +33,11 @@
 
 using namespace std;
 
+#define Lua51
+
+// 前方宣言
+void stack_print(lua_State*);
+
 /*!
 	@brief エントリーポイント
 	@note  CLIから実行した際に引数を渡せるように用意だけしとく。
@@ -42,10 +47,54 @@ using namespace std;
 */
 int main(int argNum, const char* argments) 
 {
+#pragma region メモリリーク
 #if defined DEBUG||_DEBUG
 	// メモリリーク.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // DEBUG||_DEBUG
+#pragma endregion
+
+#ifdef Lua51
+#pragma region 導入
+#if false
+	lua_State* L = luaL_newstate();
+	lua_close(L);
+#endif
+#pragma endregion
+
+#pragma region コルーチン
+#if true
+
+	lua_State* L = luaL_newstate();
+
+	// コルーチンを使えるようにライブラリをLuaステートに設定する
+	luaopen_base(L);
+
+	if (luaL_dofile(L, "resources/lua/test.lua")) {
+		cout << lua_tostring(L, lua_gettop(L)) << endl;
+		lua_close(L);
+		::system("pause");
+	}
+
+	// スレッド作成(コルーチン).
+	auto co = lua_newthread(L);
+
+	lua_getglobal(co, "step");
+
+	cout << "wait getchar();" << endl;
+	while (lua_resume(co,0))
+	{
+		stack_print(co);
+		getchar();
+	}
+
+#endif
+#pragma endregion
+
+
+#else
+	
+
 
 	lua_wrapper* lua = new lua_wrapper();
 	lua->initialize();
@@ -157,7 +206,7 @@ int main(int argNum, const char* argments)
 
 	try
 	{
-		while (lua_resume(L,co,0))
+		while (lua_resume(co,0))
 		{
 
 		}
@@ -178,8 +227,56 @@ int main(int argNum, const char* argments)
 	//int num = lua_gettop(lua->get_state());
 	//lua_pop(lua->get_state(), num);
 	delete (lua);
+#endif // Lua51
 
 	//とりあえず空
 	::system("pause");
 	return SUCCESS;
+}
+
+void stack_print(lua_State* state) {
+	const int num = lua_gettop(state);
+
+	cout << "lua_State->stack print" << endl;
+
+	if (num == 0) {
+		cout << "No stack." << endl;
+		return;
+	}
+
+	for (int i = num; i >= 1; i--) {
+		printf("%03d(%04d): ", i, -num + i - 1);
+		int type = lua_type(state, i);
+		switch (type) {
+		case LUA_TNIL:
+			printf("NIL\n");
+			break;
+		case LUA_TBOOLEAN:
+			printf("BOOLEAN %s\n", lua_toboolean(state, i) ? "true" : "false");
+			break;
+		case LUA_TLIGHTUSERDATA:
+			printf("LIGHTUSERDATA\n");
+			break;
+		case LUA_TNUMBER:
+			printf("NUMBER %f\n", lua_tonumber(state, i));
+			break;
+		case LUA_TSTRING:
+			printf("STRING %s\n", lua_tostring(state, i));
+			break;
+		case LUA_TTABLE:
+			printf("TABLE\n");
+			break;
+		case LUA_TFUNCTION:
+			printf("FUNCTION\n");
+			break;
+		case LUA_TUSERDATA:
+			printf("USERDATA\n");
+			break;
+		case LUA_TTHREAD:
+			printf("THREAD\n");
+			break;
+		}
+	}
+
+	cout << endl;
 }
