@@ -109,7 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -117,7 +117,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua5.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liblua54.a</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -147,6 +147,14 @@ REM ============================================================================
 
 REM 呼び出し
 call "!BAT_PATH!" "!COPY_TARGET!" "!READ_DIR!"
+
+REM 依存dll(dllディレクトリ以下)
+set TDIR=$(SolutionDir)\dll\$(Platform)\
+for /R %TDIR% %%f in (*) do (
+    echo fileName:%%f
+    call "!BAT_PATH!" "%%f" "!READ_DIR!"
+)
+
 
 REM 遅延環境変数終了
 endlocal</Command>
@@ -161,7 +169,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -171,7 +179,7 @@ endlocal</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua5.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liblua54.a</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -201,6 +209,14 @@ REM ============================================================================
 
 REM 呼び出し
 call "!BAT_PATH!" "!COPY_TARGET!" "!READ_DIR!"
+
+REM 依存dll(dllディレクトリ以下)
+set TDIR=$(SolutionDir)\dll\$(Platform)\
+for /R %TDIR% %%f in (*) do (
+    echo fileName:%%f
+    call "!BAT_PATH!" "%%f" "!READ_DIR!"
+)
+
 
 REM 遅延環境変数終了
 endlocal</Command>
@@ -213,7 +229,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -221,7 +237,7 @@ endlocal</Command>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liblua54.a</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -251,6 +267,14 @@ REM ============================================================================
 
 REM 呼び出し
 call "!BAT_PATH!" "!COPY_TARGET!" "!READ_DIR!"
+
+REM 依存dll(dllディレクトリ以下)
+set TDIR=$(SolutionDir)\dll\$(Platform)\
+for /R %TDIR% %%f in (*) do (
+    echo fileName:%%f
+    call "!BAT_PATH!" "%%f" "!READ_DIR!"
+)
+
 
 REM 遅延環境変数終了
 endlocal</Command>
@@ -265,7 +289,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\include;$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -275,7 +299,7 @@ endlocal</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\ExternalDynamicLinkLibrary\dll\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liblua54.a</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -305,6 +329,14 @@ REM ============================================================================
 
 REM 呼び出し
 call "!BAT_PATH!" "!COPY_TARGET!" "!READ_DIR!"
+
+REM 依存dll(dllディレクトリ以下)
+set TDIR=$(SolutionDir)\dll\$(Platform)\
+for /R %TDIR% %%f in (*) do (
+    echo fileName:%%f
+    call "!BAT_PATH!" "%%f" "!READ_DIR!"
+)
+
 
 REM 遅延環境変数終了
 endlocal</Command>

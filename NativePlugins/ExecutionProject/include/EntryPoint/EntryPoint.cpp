@@ -23,9 +23,9 @@ using namespace std;
 */
 int main(int argNum, const char* argments) 
 {
-	lua_wrapper lua;
+	lua_wrapper* lua = new lua_wrapper();
 
-
+	delete (lua);
 
 	//‚Æ‚è‚ ‚¦‚¸‹ó
 	system("pause");
