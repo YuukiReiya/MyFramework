@@ -33,11 +33,12 @@
 
 using namespace std;
 
-#define Lua51_
-#define Lua54
+#define Lua51
+#define Lua54_
 
 // 前方宣言
 void stack_print(lua_State*);
+bool load(lua_State*, string);
 
 /*!
 	@brief エントリーポイント
@@ -64,7 +65,7 @@ int main(int argNum, const char* argments)
 #pragma endregion
 
 #pragma region コルーチン
-#if true
+#if false
 
 	lua_State* L = luaL_newstate();
 
@@ -86,8 +87,69 @@ int main(int argNum, const char* argments)
 	while (lua_resume(co,0))
 	{
 		stack_print(co);
+		// Luaで返された結果をstring文字列で取得.
+		auto str = lua_tostring(co, lua_gettop(co));
+		cout << "str:" << str << endl;
 		getchar();
 	}
+
+#endif
+#pragma endregion
+
+#pragma region 関数
+#if false
+	lua_State* L = luaL_newstate();
+
+	// ここで呼び出しても無意味.
+	// luaファイルを読込終わってからでないと意味ない!
+	// luaopen_base(L);		// 呼び出しても意味ないよ！！
+	/*
+	* @example	resources/lua/test.lua:16: attempt to call global 'print' (a nil value)
+	* と思ったけど気のせいか…？
+	* 初回は問題だった気がしたけど２回目以降は通るようになった。
+	* 分からん。
+	*/
+
+	if (!load(L, "resources/lua/test.lua")) {
+		::cout << "FAILED to initialize." << endl;
+		return FAILED;
+	}
+
+	// Lua側で使用するライブラリの準備.
+	// ※1 これをしないとLua側で利用可能な標準関数（printなど）が呼び出せない
+	// ※2 必ず読込後にしないとダメ！
+	//luaL_openlibs(L);	// lua5.0？一応動いた。
+	luaopen_base(L);		// こっちがいい？
+
+	// 呼び出す関数を指定.
+	lua_getglobal(L, "print_test");
+	// 引数設定.
+	lua_pushstring(L, "この文字列をLuaでprintしてください");
+
+	// 現スタックの可視化
+	stack_print(L);
+
+	// 関数呼び出し.
+	/*
+		@param[in] lua_State*
+		@param[in] lua関数の引数の数.
+		@param[in] lua関数の戻り値の数.
+		@param[in] errorfunc? // エラーが起きた時に帰ってくる値？ 謎
+						  <br>第4引数は独自のエラーメッセージを取り扱う時に使いますが、デフォルトで良い場合は0を渡します。
+	*/
+	int ret = lua_pcall(L, 1, 0, 0);
+
+	::cout << "result:" << ret << endl;
+
+	stack_print(L);
+
+#endif
+#pragma endregion
+
+#pragma region テーブル
+#if true
+
+
 
 #endif
 #pragma endregion
@@ -125,20 +187,19 @@ int main(int argNum, const char* argments)
 	// スレッド作成(コルーチン).
 	auto co = lua_newthread(L);
 
-	auto getglobal=lua_getglobal(co, "step");
 	int* res = new int();
 
-	::cout << "getglobal=" << getglobal << endl;
+	//::cout << "getglobal=" << getglobal << endl;
 	
 
 	stack_print(L);
 
 	::cout << "wait getchar();" << endl;
-	while (lua_resume(co, co, 0, res) == LUA_OK)
-	{
-		stack_print(co);
-		getchar();
-	}
+	//while (lua_resume(co, co, 0, res) == LUA_OK)
+	//{
+	//	stack_print(co);
+	//	getchar();
+	//}
 	::cout << "end while lua_resume print -> co" << endl;
 	stack_print(co);
 	::cout << "end while lua_resume print -> L" << endl;
@@ -286,6 +347,7 @@ int main(int argNum, const char* argments)
 #endif // Lua51
 
 	//とりあえず空
+	::cout << "正常終了" << endl;
 	::system("pause");
 	return SUCCESS;
 }
@@ -335,4 +397,14 @@ void stack_print(lua_State* state) {
 	}
 
 	::cout << endl;
+}
+
+bool load(lua_State* L, string path) {
+
+	if (luaL_dofile(L, path.c_str())) {
+		::cout << lua_tostring(L, lua_gettop(L)) << endl;
+		lua_close(L);
+		return false;
+	}
+	return true;
 }
