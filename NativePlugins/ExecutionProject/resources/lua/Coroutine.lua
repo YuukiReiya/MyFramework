@@ -1,5 +1,5 @@
 function step()
-    --coroutine.yield("step1");
-    --coroutine.yield("step2");
-    --coroutine.yield("step3");
+    yield("step1");
+    yield("step2");
+    yield("step3");
 end

@@ -33,7 +33,8 @@
 
 using namespace std;
 
-#define Lua51
+#define Lua51_
+#define Lua54
 
 // 前方宣言
 void stack_print(lua_State*);
@@ -88,6 +89,61 @@ int main(int argNum, const char* argments)
 		getchar();
 	}
 
+#endif
+#pragma endregion
+
+#elif defined Lua54
+
+#pragma region 導入
+#if false
+	lua_State* L = luaL_newstate();
+	lua_close(L);
+#endif
+#pragma endregion
+
+#pragma region コルーチン
+#if true
+	lua_State* L = luaL_newstate();
+
+	// コルーチンを使えるようにライブラリをLuaステートに設定する
+	luaopen_base(L);
+
+	//if (luaL_dofile(L, "resources/lua/test.lua")) {
+	//	::cout << lua_tostring(L, lua_gettop(L)) << endl;
+	//	lua_close(L);
+	//	::system("pause");
+	//}
+
+	if (luaL_dofile(L, "resources/lua/Coroutine.lua")) {
+		::cout << lua_tostring(L, lua_gettop(L)) << endl;
+		lua_close(L);
+		:: cout << "FAILED" << endl;
+		::system("pause");
+	}
+
+
+	// スレッド作成(コルーチン).
+	auto co = lua_newthread(L);
+
+	auto getglobal=lua_getglobal(co, "step");
+	int* res = new int();
+
+	::cout << "getglobal=" << getglobal << endl;
+	
+
+	stack_print(L);
+
+	::cout << "wait getchar();" << endl;
+	while (lua_resume(co, co, 0, res) == LUA_OK)
+	{
+		stack_print(co);
+		getchar();
+	}
+	::cout << "end while lua_resume print -> co" << endl;
+	stack_print(co);
+	::cout << "end while lua_resume print -> L" << endl;
+	stack_print(L);
+	delete(res);
 #endif
 #pragma endregion
 
@@ -237,10 +293,10 @@ int main(int argNum, const char* argments)
 void stack_print(lua_State* state) {
 	const int num = lua_gettop(state);
 
-	cout << "lua_State->stack print" << endl;
+	::cout << "lua_State->stack print" << endl;
 
 	if (num == 0) {
-		cout << "No stack." << endl;
+		::cout << "No stack." << endl;
 		return;
 	}
 
@@ -278,5 +334,5 @@ void stack_print(lua_State* state) {
 		}
 	}
 
-	cout << endl;
+	::cout << endl;
 }
