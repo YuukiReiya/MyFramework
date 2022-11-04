@@ -33,6 +33,16 @@
 
 using namespace std;
 
+#define Lua51
+#define Lua54_
+
+// 前方宣言
+void stack_print(lua_State*);
+bool load(lua_State*, string);
+int Linear(lua_State*);
+int Linear(float, float, float);
+int glueFunc(lua_State*);
+
 /*!
 	@brief エントリーポイント
 	@note  CLIから実行した際に引数を渡せるように用意だけしとく。
@@ -42,10 +52,221 @@ using namespace std;
 */
 int main(int argNum, const char* argments) 
 {
+#pragma region メモリリーク
 #if defined DEBUG||_DEBUG
 	// メモリリーク.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // DEBUG||_DEBUG
+#pragma endregion
+
+#ifdef Lua51
+#pragma region 導入
+#if false
+	lua_State* L = luaL_newstate();
+	lua_close(L);
+#endif
+#pragma endregion
+
+#pragma region コルーチン
+#if false
+
+	lua_State* L = luaL_newstate();
+
+	// コルーチンを使えるようにライブラリをLuaステートに設定する
+	luaopen_base(L);
+
+	if (luaL_dofile(L, "resources/lua/test.lua")) {
+		cout << lua_tostring(L, lua_gettop(L)) << endl;
+		lua_close(L);
+		::system("pause");
+	}
+
+	// スレッド作成(コルーチン).
+	auto co = lua_newthread(L);
+
+	lua_getglobal(co, "step");
+
+	cout << "wait getchar();" << endl;
+	while (lua_resume(co,0))
+	{
+		stack_print(co);
+		// Luaで返された結果をstring文字列で取得.
+		auto str = lua_tostring(co, lua_gettop(co));
+		cout << "str:" << str << endl;
+		getchar();
+	}
+
+#endif
+#pragma endregion
+
+#pragma region 関数
+#if false
+	lua_State* L = luaL_newstate();
+
+	// ここで呼び出しても無意味.
+	// luaファイルを読込終わってからでないと意味ない!
+	luaopen_base(L);		// 呼び出しても意味ないよ！！
+	/*
+	* @example	resources/lua/test.lua:16: attempt to call global 'print' (a nil value)
+	* と思ったけど気のせいか…？
+	* 初回は問題だった気がしたけど２回目以降は通るようになった。
+	* 分からん。
+	* 
+	* lua側手を入れたらload関数(多分luaL_dofile)呼び出した時点でattempt to call global 'print' (a nil value)を吐くようになった。
+	* lpcallで明示的に呼び出さずともdofileでlua処理を実行しているのか…？
+	* ※load前にluaopen_baseを呼び出すことでattempt to call global 'print'は解消されたことを確認している。
+	* やはりload前に呼び出しておいた方が良さげか。
+	*/
+
+	if (!load(L, "resources/lua/test.lua")) {
+		::cout << "FAILED to initialize." << endl;
+		return FAILED;
+	}
+
+	// Lua側で使用するライブラリの準備.
+	// ※1 これをしないとLua側で利用可能な標準関数（printなど）が呼び出せない
+	// ※2 必ず読込後にしないとダメ！
+	//luaL_openlibs(L);	// lua5.0？一応動いた。
+	//luaopen_base(L);		// こっちがいい？
+
+	// 呼び出す関数を指定.
+	lua_getglobal(L, "print_test");
+	// 引数設定.
+	lua_pushstring(L, "この文字列をLuaでprintしてください");
+
+	// 現スタックの可視化
+	stack_print(L);
+
+	// 関数呼び出し.
+	/*
+		@param[in] lua_State*
+		@param[in] lua関数の引数の数.
+		@param[in] lua関数の戻り値の数.
+		@param[in] errorfunc? // エラーが起きた時に帰ってくる値？ 謎
+						  <br>第4引数は独自のエラーメッセージを取り扱う時に使いますが、デフォルトで良い場合は0を渡します。
+	*/
+	int ret = lua_pcall(L, 1, 0, 0);
+
+	::cout << "result:" << ret << endl;
+
+	stack_print(L);
+
+#endif
+#pragma endregion
+
+#pragma region グルー関数(LuaからC言語の関数を呼び出す)
+	lua_State* L = luaL_newstate();
+	luaopen_base(L);
+	if (!load(L, "resources/lua/test.lua")) {
+		::cout << "failed to load lua.";
+		return FAILED;
+	}
+
+	// lua側にC++のメソッドを登録.
+	//
+//#define NO_ARG
+#ifdef NO_ARG
+	lua_register(L, "GlueFuncTest", &glueFunc); // 第二引数に指定しているのがLua側に登録したメソッド名らしいのでC＋＋でAという関数もLua側にBと登録できそう。
+	
+	lua_getglobal(L, "entry2");
+	lua_pcall(L, 0, 0, 0);
+	stack_print(L);
+
+#else
+	lua_register(L, "Linear", &Linear); // 第二引数に指定しているのがLua側に登録したメソッド名らしいのでC＋＋でAという関数もLua側にBと登録できそう。
+
+	::cout << "Lua呼び出し前" << endl;
+	stack_print(L);
+	::cout << endl;
+
+	// luaの呼び出し.
+	lua_getglobal(L, "entry");
+
+	auto a = static_cast<float>(lua_tonumber(L, 1));
+	auto b = static_cast<float>(lua_tonumber(L, 2));
+	auto c = static_cast<float>(lua_tonumber(L, 3));
+
+	//auto ret = Linear(a, b, c);
+	//::cout << "Linear = " << ret << " a:" << a << " b:" << b << " c:" << c << endl;
+
+	//lua_pcall(L, 3, 1, 0); // No Stack.
+	//lua_pcall(L, 0, 0, 0); // 0.2 (Lua第三引数t:0.2)
+	//lua_pcall(L, 1, 0, 0); // 002(-001): STRING attempt to call a table value
+	lua_pcall(L, 0, 1, 0);
+
+	::cout << "Lua呼び出し後" << endl;
+	stack_print(L);
+#endif
+
+#pragma endregion
+
+
+#pragma region テーブル
+#if false
+
+
+
+#endif
+#pragma endregion
+
+#elif defined Lua54
+
+#pragma region 導入
+#if false
+	lua_State* L = luaL_newstate();
+	lua_close(L);
+#endif
+#pragma endregion
+
+#pragma region コルーチン
+#if true
+	lua_State* L = luaL_newstate();
+
+	// コルーチンを使えるようにライブラリをLuaステートに設定する
+	luaopen_base(L);
+
+	//if (luaL_dofile(L, "resources/lua/test.lua")) {
+	//	::cout << lua_tostring(L, lua_gettop(L)) << endl;
+	//	lua_close(L);
+	//	::system("pause");
+	//}
+
+	if (luaL_dofile(L, "resources/lua/Coroutine.lua")) {
+		::cout << lua_tostring(L, lua_gettop(L)) << endl;
+		lua_close(L);
+		:: cout << "FAILED" << endl;
+		::system("pause");
+	}
+
+
+	// スレッド作成(コルーチン).
+	auto co = lua_newthread(L);
+
+	int* res = new int();
+
+	//::cout << "getglobal=" << getglobal << endl;
+	
+
+	stack_print(L);
+
+	::cout << "wait getchar();" << endl;
+	//while (lua_resume(co, co, 0, res) == LUA_OK)
+	//{
+	//	stack_print(co);
+	//	getchar();
+	//}
+	::cout << "end while lua_resume print -> co" << endl;
+	stack_print(co);
+	::cout << "end while lua_resume print -> L" << endl;
+	stack_print(L);
+	delete(res);
+#endif
+#pragma endregion
+
+
+#else
+	
+
 
 	lua_wrapper* lua = new lua_wrapper();
 	lua->initialize();
@@ -62,20 +283,27 @@ int main(int argNum, const char* argments)
 	if (luaL_dofile(lua->get_state(), "resources/lua/test.lua")) {
 		::printf("%s\n", lua_tostring(lua->get_state(), lua_gettop(lua->get_state())));
 		lua_close(lua->get_state());
+		::system("pause");
+
 		return FAILED;
 	}
 #pragma region 外部のluaファイルから変数読込
-#if false
+#if true
 #define SAMPLE_EXTERNAL_LUA_READ
 	//変数読み込み
 	lua_getglobal(lua->get_state(), "wndWidth");
 	lua_getglobal(lua->get_state(), "wndHeight");
 	lua_getglobal(lua->get_state(), "wndName");
+
+	lua->stack_print();
 #endif
 #pragma endregion
 
 #pragma region 外部のluaファイルから関数を呼ぶ
-#if !SAMPLE_EXTERNAL_LUA_READ&&false
+#ifndef SAMPLE_EXTERNAL_LUA_READ
+#if false
+
+
 	// Luaステート内にある"calc関数"を指定
 	lua_getglobal(lua->get_state(), "calc");
 
@@ -120,6 +348,7 @@ int main(int argNum, const char* argments)
 
 	lua->stack_print();
 #endif
+#endif // !SAMPLE_EXTERNAL_LUA_READ
 #pragma endregion
 
 #pragma region コルーチン
@@ -149,7 +378,10 @@ int main(int argNum, const char* argments)
 
 	try
 	{
-		while (lua_resume(L, co, 0, r))
+		while (lua_resume(co,0))
+		{
+
+		}
 		{
 
 		}
@@ -167,8 +399,109 @@ int main(int argNum, const char* argments)
 	//int num = lua_gettop(lua->get_state());
 	//lua_pop(lua->get_state(), num);
 	delete (lua);
+#endif // Lua54
 
 	//とりあえず空
+	::cout << "正常終了" << endl;
 	::system("pause");
 	return SUCCESS;
 }
+
+void stack_print(lua_State* state) {
+	const int num = lua_gettop(state);
+
+	::cout << "lua_State->stack print" << endl;
+
+	if (num == 0) {
+		::cout << "No stack." << endl;
+		return;
+	}
+
+	for (int i = num; i >= 1; i--) {
+		printf("%03d(%04d): ", i, -num + i - 1);
+		int type = lua_type(state, i);
+		switch (type) {
+		case LUA_TNIL:
+			printf("NIL\n");
+			break;
+		case LUA_TBOOLEAN:
+			printf("BOOLEAN %s\n", lua_toboolean(state, i) ? "true" : "false");
+			break;
+		case LUA_TLIGHTUSERDATA:
+			printf("LIGHTUSERDATA\n");
+			break;
+		case LUA_TNUMBER:
+			printf("NUMBER %f\n", lua_tonumber(state, i));
+			break;
+		case LUA_TSTRING:
+			printf("STRING %s\n", lua_tostring(state, i));
+			break;
+		case LUA_TTABLE:
+			printf("TABLE\n");
+			break;
+		case LUA_TFUNCTION:
+			printf("FUNCTION\n");
+			break;
+		case LUA_TUSERDATA:
+			printf("USERDATA\n");
+			break;
+		case LUA_TTHREAD:
+			printf("THREAD\n");
+			break;
+		}
+	}
+
+	::cout << endl;
+}
+
+bool load(lua_State* L, string path) {
+
+	if (luaL_dofile(L, path.c_str())) {
+		::cout << lua_tostring(L, lua_gettop(L)) << endl;
+		lua_close(L);
+		return false;
+	}
+	return true;
+}
+
+#pragma region グルー関数
+
+// 
+int glueFunc(lua_State*) {
+	::cout << "Luaから呼び出されたよ" << endl;
+	// 戻り値無いので'0'
+	return 0;
+}
+
+// 線形補完.
+// (引数3つ、戻り値float型1つの例)
+int Linear(lua_State* L)
+{
+	// 第一引数.
+	float start = static_cast<float>(lua_tonumber(L, 1));
+	// 第二引数.
+	float end = static_cast<float>(lua_tonumber(L, 2));
+	// 第三引数.
+	float t = static_cast<float>(lua_tonumber(L, 3));
+
+	// 補完計算？
+	auto result = (1.f - t) * start + t * end;
+
+	// Lua側で割り当てた引数をprintする.
+	::cout << "線形補完[s]" << start << ",[e]" << end << ",[t]" << t << "[result]" << result << endl;
+
+	// スタック削除.
+	lua_pop(L, lua_gettop(L));
+
+	// スタックに戻り値を積む.
+	lua_pushnumber(L, result);
+
+	// 戻り値の数を返す.
+	return 1;
+}
+
+int Linear(float a, float b, float t) 
+{
+	return (1.f - t) * a + t * b;
+}
+#pragma endregion
