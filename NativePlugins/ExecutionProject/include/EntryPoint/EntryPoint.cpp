@@ -39,6 +39,9 @@ using namespace std;
 // 前方宣言
 void stack_print(lua_State*);
 bool load(lua_State*, string);
+int Linear(lua_State*);
+int Linear(float, float, float);
+int glueFunc(lua_State*);
 
 /*!
 	@brief エントリーポイント
@@ -102,12 +105,17 @@ int main(int argNum, const char* argments)
 
 	// ここで呼び出しても無意味.
 	// luaファイルを読込終わってからでないと意味ない!
-	// luaopen_base(L);		// 呼び出しても意味ないよ！！
+	luaopen_base(L);		// 呼び出しても意味ないよ！！
 	/*
 	* @example	resources/lua/test.lua:16: attempt to call global 'print' (a nil value)
 	* と思ったけど気のせいか…？
 	* 初回は問題だった気がしたけど２回目以降は通るようになった。
 	* 分からん。
+	* 
+	* lua側手を入れたらload関数(多分luaL_dofile)呼び出した時点でattempt to call global 'print' (a nil value)を吐くようになった。
+	* lpcallで明示的に呼び出さずともdofileでlua処理を実行しているのか…？
+	* ※load前にluaopen_baseを呼び出すことでattempt to call global 'print'は解消されたことを確認している。
+	* やはりload前に呼び出しておいた方が良さげか。
 	*/
 
 	if (!load(L, "resources/lua/test.lua")) {
@@ -119,7 +127,7 @@ int main(int argNum, const char* argments)
 	// ※1 これをしないとLua側で利用可能な標準関数（printなど）が呼び出せない
 	// ※2 必ず読込後にしないとダメ！
 	//luaL_openlibs(L);	// lua5.0？一応動いた。
-	luaopen_base(L);		// こっちがいい？
+	//luaopen_base(L);		// こっちがいい？
 
 	// 呼び出す関数を指定.
 	lua_getglobal(L, "print_test");
@@ -146,8 +154,55 @@ int main(int argNum, const char* argments)
 #endif
 #pragma endregion
 
+#pragma region グルー関数(LuaからC言語の関数を呼び出す)
+	lua_State* L = luaL_newstate();
+	luaopen_base(L);
+	if (!load(L, "resources/lua/test.lua")) {
+		::cout << "failed to load lua.";
+		return FAILED;
+	}
+
+	// lua側にC++のメソッドを登録.
+	//
+//#define NO_ARG
+#ifdef NO_ARG
+	lua_register(L, "GlueFuncTest", &glueFunc); // 第二引数に指定しているのがLua側に登録したメソッド名らしいのでC＋＋でAという関数もLua側にBと登録できそう。
+	
+	lua_getglobal(L, "entry2");
+	lua_pcall(L, 0, 0, 0);
+	stack_print(L);
+
+#else
+	lua_register(L, "Linear", &Linear); // 第二引数に指定しているのがLua側に登録したメソッド名らしいのでC＋＋でAという関数もLua側にBと登録できそう。
+
+	::cout << "Lua呼び出し前" << endl;
+	stack_print(L);
+	::cout << endl;
+
+	// luaの呼び出し.
+	lua_getglobal(L, "entry");
+
+	auto a = static_cast<float>(lua_tonumber(L, 1));
+	auto b = static_cast<float>(lua_tonumber(L, 2));
+	auto c = static_cast<float>(lua_tonumber(L, 3));
+
+	//auto ret = Linear(a, b, c);
+	//::cout << "Linear = " << ret << " a:" << a << " b:" << b << " c:" << c << endl;
+
+	//lua_pcall(L, 3, 1, 0); // No Stack.
+	//lua_pcall(L, 0, 0, 0); // 0.2 (Lua第三引数t:0.2)
+	//lua_pcall(L, 1, 0, 0); // 002(-001): STRING attempt to call a table value
+	lua_pcall(L, 0, 1, 0);
+
+	::cout << "Lua呼び出し後" << endl;
+	stack_print(L);
+#endif
+
+#pragma endregion
+
+
 #pragma region テーブル
-#if true
+#if false
 
 
 
@@ -344,7 +399,7 @@ int main(int argNum, const char* argments)
 	//int num = lua_gettop(lua->get_state());
 	//lua_pop(lua->get_state(), num);
 	delete (lua);
-#endif // Lua51
+#endif // Lua54
 
 	//とりあえず空
 	::cout << "正常終了" << endl;
@@ -408,3 +463,45 @@ bool load(lua_State* L, string path) {
 	}
 	return true;
 }
+
+#pragma region グルー関数
+
+// 
+int glueFunc(lua_State*) {
+	::cout << "Luaから呼び出されたよ" << endl;
+	// 戻り値無いので'0'
+	return 0;
+}
+
+// 線形補完.
+// (引数3つ、戻り値float型1つの例)
+int Linear(lua_State* L)
+{
+	// 第一引数.
+	float start = static_cast<float>(lua_tonumber(L, 1));
+	// 第二引数.
+	float end = static_cast<float>(lua_tonumber(L, 2));
+	// 第三引数.
+	float t = static_cast<float>(lua_tonumber(L, 3));
+
+	// 補完計算？
+	auto result = (1.f - t) * start + t * end;
+
+	// Lua側で割り当てた引数をprintする.
+	::cout << "線形補完[s]" << start << ",[e]" << end << ",[t]" << t << "[result]" << result << endl;
+
+	// スタック削除.
+	lua_pop(L, lua_gettop(L));
+
+	// スタックに戻り値を積む.
+	lua_pushnumber(L, result);
+
+	// 戻り値の数を返す.
+	return 1;
+}
+
+int Linear(float a, float b, float t) 
+{
+	return (1.f - t) * a + t * b;
+}
+#pragma endregion
