@@ -12,6 +12,14 @@
 #endif
 #pragma endregion
 
+#pragma region •Ï”–¼:’l‚Ìo—Í
+#if DEBUG||_DEBUG
+#define VARARGOUT(var) std::cout<<#var<<":"<<var<<std::endl;
+#else
+#define VARARGOUT(var)
+#endif // DEBUG||_DEBUG
+#pragma endregion
+
 #ifndef EDL_PCH_HPP
 #define EDL_PCH_HPP
 
