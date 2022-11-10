@@ -14,6 +14,7 @@
 #include "../../../ExternalDynamicLinkLibrary/include/Sample/Sample.hpp"
 #include "../../../ExternalDynamicLinkLibrary/include/lua_wrapper.hpp"
 #include "../../ExecutionProject/include/sample/lua/lua_sample_51.hpp"
+#include "../../ExecutionProject/include/sample/lua/lua_sample_dummy.hpp"
 #define SUCCESS 0
 #define FAILED -1
 
@@ -35,17 +36,48 @@ int main(int argNum, const char* argments)
 #endif // DEBUG||_DEBUG
 #pragma endregion
 
-	auto lua =
+	/*
+	* @brief	UTF-8エンコード.
+	* @detail	読み込むLuaファイルがutf-8でエンコードされているのでlocaleを設定しておく.
+	*/
+	setlocale(LC_ALL, ".UTF8");
+
+
+	Ilua_sample* lua =
 #if LUA_VERSION_NUM == 501
 		new lua_sample_51()
 #elif LUA_VERSION_NUM==504
-
+#else
+		new lua_sample_dummy()
 #endif
 		;
 	/*
 	* @brief	Luaで定義した変数の取得仕方のサンプル.
-	*/
 	lua->get_lua_value_sample();
+	*/
+
+	/*
+	* @brief	Luaで定義した関数をC＋＋で呼び出すサンプル.
+	lua->do_lua_method_sample();
+	*/
+
+	/*
+	* @brief	Luaで行うコルーチンのサンプル.
+	lua->do_lua_coroutine_sample();
+	*/
+
+	/*
+	* @brief	Luaテーブルの挙動サンプル
+	*/
+	//lua->do_lua_table_sample();
+
+	/*
+	* @brief	LuaでC++の関数を呼び出すサンプル
+	*/
+	lua->do_cpp_method_sample();
+
+	// メモリ開放
+	delete lua;
 
 	system("pause");
 	return SUCCESS;

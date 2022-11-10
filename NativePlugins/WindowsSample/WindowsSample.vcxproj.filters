@@ -13,27 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Lua">
-      <UniqueIdentifier>{eb9eb505-7d12-46af-9cd2-92c1483f9113}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\EntryPoint\EntryPoint.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="include\sample\lua\lua_sample_51.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\sample\lua\lua_sample_51.hpp">
-      <Filter>Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sample\lua\Ilua_sample.hpp">
-      <Filter>Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sample\lua\lua_sample_dummy.hpp">
-      <Filter>Lua</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
