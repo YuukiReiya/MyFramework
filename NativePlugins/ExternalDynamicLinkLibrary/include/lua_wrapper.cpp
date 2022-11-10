@@ -86,11 +86,11 @@ void CALL lua_wrapper::stack_print()
 void CALL lua_wrapper::push()
 {
     lua_pushnil(state);
-    return void CALL();
+    //return void CALL();
 }
 
 void CALL lua_wrapper::push(void* ptr)
 {
     //lua_pushboolean(state, ptr);
-    return void CALL();
+    //return void CALL();
 }

@@ -5,3 +5,7 @@ ExecutionProject/obj/
 # ExternalDynamicLinkLibrary
 ExternalDynamicLinkLibrary/bin/
 ExternalDynamicLinkLibrary/obj/
+
+# WindowsSample
+WindowsSample/bin
+WindowsSample/obj
