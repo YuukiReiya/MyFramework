@@ -24,6 +24,12 @@
     <ClCompile Include="include\sample\lua\lua_sample_51.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="include\sample\lua\lua_sample_54.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="include\sample\lua\lua_sample_factor.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\sample\lua\lua_sample_51.hpp">
@@ -33,6 +39,12 @@
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="include\sample\lua\lua_sample_dummy.hpp">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sample\lua\lua_sample_54.hpp">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sample\lua\lua_sample_factor.hpp">
       <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,12 +1,11 @@
 //参考:http://marupeke296.com/LUA_main.html
 #pragma once
-#include <lua.hpp>
-#include <string>
-#include "edlpch.hpp"
 #include "Ilua_sample.hpp"
-
 #pragma region Lua ver_5.1
 #if LUA_VERSION_NUM == 501
+#include <string>
+#include "edlpch.hpp"
+
 class lua_sample_51
 	:public Ilua_sample
 {
@@ -20,8 +19,6 @@ public:
 	void do_lua_table_sample()override;
 	void do_cpp_method_sample()override;
 private:
-	lua_State* m_pState = nullptr;
-
 	/*
 		@brief	lua_StateにLuaファイルをロード.
 	*/
