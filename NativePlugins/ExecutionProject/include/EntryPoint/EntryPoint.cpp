@@ -12,9 +12,7 @@
 #include<lua.hpp>
 #include "edlpch.hpp"
 #include "../../../ExternalDynamicLinkLibrary/include/Sample/Sample.hpp"
-#include "../../../ExternalDynamicLinkLibrary/include/lua_wrapper.hpp"
-#include "../../ExecutionProject/include/sample/lua/lua_sample_51.hpp"
-#include "../../ExecutionProject/include/sample/lua/lua_sample_dummy.hpp"
+#include "../../ExecutionProject/include/sample/lua/lua_sample_factor.hpp"
 #define SUCCESS 0
 #define FAILED -1
 
@@ -42,15 +40,10 @@ int main(int argNum, const char* argments)
 	*/
 	setlocale(LC_ALL, ".UTF8");
 
+	auto factor = new lua_sample_factor();
+	auto lua = factor->create();
+	delete factor;
 
-	Ilua_sample* lua =
-#if LUA_VERSION_NUM == 501
-		new lua_sample_51()
-#elif LUA_VERSION_NUM==504
-#else
-		new lua_sample_dummy()
-#endif
-		;
 	/*
 	* @brief	Luaで定義した変数の取得仕方のサンプル.
 	lua->get_lua_value_sample();
@@ -68,13 +61,13 @@ int main(int argNum, const char* argments)
 
 	/*
 	* @brief	Luaテーブルの挙動サンプル
+	lua->do_lua_table_sample();
 	*/
-	//lua->do_lua_table_sample();
 
 	/*
 	* @brief	LuaでC++の関数を呼び出すサンプル
-	*/
 	lua->do_cpp_method_sample();
+	*/
 
 	// メモリ開放
 	delete lua;
