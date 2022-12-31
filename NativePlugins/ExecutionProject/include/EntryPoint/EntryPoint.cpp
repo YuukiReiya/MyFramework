@@ -10,9 +10,9 @@
 #include <iostream>
 #include <vector>
 #include<lua.hpp>
-#include "edlpch.hpp"
 #include "../../../ExternalDynamicLinkLibrary/include/Sample/Sample.hpp"
 #include "../../ExecutionProject/include/sample/lua/lua_sample_factor.hpp"
+#include "common/edlpch.hpp"
 #define SUCCESS 0
 #define FAILED -1
 

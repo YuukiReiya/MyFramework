@@ -3,7 +3,6 @@
 #pragma region Lua ver_5.4
 #if LUA_VERSION_NUM == 504
 #include <string>
-#include "edlpch.hpp"
 
 class lua_sample_54 :
     public Ilua_sample

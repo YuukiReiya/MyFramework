@@ -1,3 +1,4 @@
+#include<iostream>
 #include "lua_sample_54.hpp"
 #include<format>
 
@@ -181,7 +182,6 @@ void lua_sample_54::do_lua_coroutine_sample()
 	// スタックにコルーチン用のメソッドを登録.
 	lua_getglobal(co, "step");
 
-	int result;
 	while (lua_resume(co, NULL, 0, results))
 	{
 		stack_print(co);

@@ -1,28 +1,30 @@
-#include "edlpch.hpp"
 #include<lua.hpp>
+#include<iostream>
+#include"lua_wrapper.hpp"
+
 
 // WIN32APPの場合はprintfがダメそうなのでOutputDebugStringAを使うらしい。
 // ひとまずServer(Linux),Client(x64)なので考えていない.
 
 using namespace std;
 
-CALL lua_wrapper::lua_wrapper()
+ lua_wrapper::lua_wrapper()
 {
 	state = nullptr;
     initialize();
 }
 
-CALL lua_wrapper::~lua_wrapper()
+ lua_wrapper::~lua_wrapper()
 {
     finalize();
 }
 
-void CALL lua_wrapper::initialize()
+void  lua_wrapper::initialize()
 {
 	state = luaL_newstate();
 }
 
-void CALL lua_wrapper::finalize()
+void  lua_wrapper::finalize()
 {
     // スタックに積まれたデータをポップして削除.
     lua_pop(state, lua_gettop(state));
@@ -30,7 +32,7 @@ void CALL lua_wrapper::finalize()
 	state = nullptr;
 }
 
-void CALL lua_wrapper::stack_print(lua_wrapper* wrapper)
+void  lua_wrapper::stack_print(lua_wrapper* wrapper)
 {
     const int num = lua_gettop(wrapper->state);
 
@@ -78,19 +80,36 @@ void CALL lua_wrapper::stack_print(lua_wrapper* wrapper)
     cout << endl;
 }
 
-void CALL lua_wrapper::stack_print()
+void  lua_wrapper::stack_print()
 {
     stack_print(this);
 }
 
-void CALL lua_wrapper::push()
+void  lua_wrapper::push()
 {
     lua_pushnil(state);
-    //return void CALL();
+    //return void ();
 }
 
-void CALL lua_wrapper::push(void* ptr)
+void  lua_wrapper::push(void* ptr)
 {
     //lua_pushboolean(state, ptr);
-    //return void CALL();
+    //return void ();
+}
+
+void lua_wrapper::push(bool value)
+{
+    lua_pushboolean(state, value);
+}
+
+void lua_wrapper::push(double value)
+{
+}
+
+void lua_wrapper::push(const char* value)
+{
+}
+
+void lua_wrapper::push(lua_State* L, int idx)
+{
 }
