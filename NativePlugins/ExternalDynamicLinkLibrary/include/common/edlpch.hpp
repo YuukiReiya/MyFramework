@@ -12,6 +12,18 @@
 #endif
 #pragma endregion
 
+#pragma region DLL(P/Invoke)
+#define DLL_EXPORT  extern "C" __declspec(dllexport)
+#define UNITY_API __stdcall
+
+/*
+	@sample
+	DLL_EXPORT <型> UNITY_API <関数名>( 引数 ) { 定義 }
+*/
+
+#pragma endregion
+
+
 #pragma region 変数名:値の出力
 #if DEBUG||_DEBUG
 #define VARARGOUT(var) std::cout<<#var<<":"<<var<<std::endl;
@@ -20,10 +32,10 @@
 #endif // DEBUG||_DEBUG
 #pragma endregion
 
-#ifndef EDL_PCH_HPP
-#define EDL_PCH_HPP
-
-// プリコンパイルするヘッダーをここに追加します
-#include "lua_wrapper.hpp"
-
-#endif //EDL_PCH_HPP
+/*
+	@brief	ダミー処理
+	@detail	P/Invoke用のダミー処理.
+				"dllexport"の定義された関数が一つもないと".lib"が出来ずにリンカーエラーが出る。
+				関数の実装が担保されれば削除してしまっていい.
+*/
+DLL_EXPORT inline void UNITY_API dummy() {}
