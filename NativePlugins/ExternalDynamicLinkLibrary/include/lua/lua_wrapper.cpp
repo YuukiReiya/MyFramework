@@ -10,7 +10,7 @@ using namespace std;
 
  lua_wrapper::lua_wrapper()
 {
-	state = nullptr;
+	pState = nullptr;
     initialize();
 }
 
@@ -21,20 +21,20 @@ using namespace std;
 
 void  lua_wrapper::initialize()
 {
-	state = luaL_newstate();
+	pState = luaL_newstate();
 }
 
 void  lua_wrapper::finalize()
 {
     // スタックに積まれたデータをポップして削除.
-    lua_pop(state, lua_gettop(state));
-	lua_close(state);
-	state = nullptr;
+    lua_pop(pState, lua_gettop(pState));
+	lua_close(pState);
+	pState = nullptr;
 }
 
 void  lua_wrapper::stack_print(lua_wrapper* wrapper)
 {
-    const int num = lua_gettop(wrapper->state);
+    const int num = lua_gettop(wrapper->pState);
 
     cout << "lua_State->stack print" << endl;
 
@@ -45,22 +45,22 @@ void  lua_wrapper::stack_print(lua_wrapper* wrapper)
 
     for (int i = num; i >= 1; i--) {
         printf("%03d(%04d): ", i, -num + i - 1);
-        int type = lua_type(wrapper->state, i);
+        int type = lua_type(wrapper->pState, i);
         switch (type) {
         case LUA_TNIL:
             printf("NIL\n");
             break;
         case LUA_TBOOLEAN:
-            printf("BOOLEAN %s\n", lua_toboolean(wrapper->state, i) ? "true" : "false");
+            printf("BOOLEAN %s\n", lua_toboolean(wrapper->pState, i) ? "true" : "false");
             break;
         case LUA_TLIGHTUSERDATA:
             printf("LIGHTUSERDATA\n");
             break;
         case LUA_TNUMBER:
-            printf("NUMBER %f\n", lua_tonumber(wrapper->state, i));
+            printf("NUMBER %f\n", lua_tonumber(wrapper->pState, i));
             break;
         case LUA_TSTRING:
-            printf("STRING %s\n", lua_tostring(wrapper->state, i));
+            printf("STRING %s\n", lua_tostring(wrapper->pState, i));
             break;
         case LUA_TTABLE:
             printf("TABLE\n");
@@ -85,9 +85,22 @@ void  lua_wrapper::stack_print()
     stack_print(this);
 }
 
+bool lua_wrapper::load(std::string lpFile)
+{
+    if (luaL_dofile(pState, lpFile.c_str()))
+    {
+        std::cout << lua_tostring(pState, lua_gettop(pState)) << std::endl;
+        lua_close(pState);
+        std::cout << "failed to load lua. path:" << lpFile << std::endl;
+
+        return false;
+    }
+    return true;
+}
+
 void  lua_wrapper::push()
 {
-    lua_pushnil(state);
+    lua_pushnil(pState);
     //return void ();
 }
 
@@ -99,7 +112,7 @@ void  lua_wrapper::push(void* ptr)
 
 void lua_wrapper::push(bool value)
 {
-    lua_pushboolean(state, value);
+    lua_pushboolean(pState, value);
 }
 
 void lua_wrapper::push(double value)

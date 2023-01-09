@@ -20,11 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\common\edlpch.cpp" />
-    <ClCompile Include="include\lua_wrapper.cpp" />
+    <ClCompile Include="include\common\EntryPoint.cpp" />
+    <ClCompile Include="include\lua\lua_parser.cpp" />
+    <ClCompile Include="include\lua\lua_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\common\edlpch.hpp" />
-    <ClInclude Include="include\lua_wrapper.hpp" />
+    <ClInclude Include="include\lua\lua_parser.hpp" />
+    <ClInclude Include="include\lua\lua_wrapper.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -107,6 +110,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\include;#$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.1\include;$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,6 +171,7 @@ endlocal</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\include;#$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.1\include;$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -227,6 +232,7 @@ endlocal</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\include;#$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.1\include;$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -287,6 +293,7 @@ endlocal</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\include;#$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.1\include;$(SolutionDir)$(ProjectName)\dll\$(Platform)\Lua\5.4\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>edlpch.hpp</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -2,6 +2,7 @@
 #pragma once
 #include <stdlib.h>
 #include <iostream>
+#include <Windows.h>
 
 #pragma region メモリリーク特定
 #if defined DEBUG || defined _DEBUG
@@ -39,3 +40,8 @@
 				関数の実装が担保されれば削除してしまっていい.
 */
 DLL_EXPORT inline void UNITY_API dummy() {}
+
+/*
+	@brief	Win32のエラーコードをメッセージとしてダイアログに出す
+*/
+DLL_EXPORT void UNITY_API MsgBoxWin32(DWORD errorcode);
