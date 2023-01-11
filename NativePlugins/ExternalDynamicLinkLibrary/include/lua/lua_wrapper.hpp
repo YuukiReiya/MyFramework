@@ -10,7 +10,8 @@ public:
 	void  finalize();
 	static void  stack_print(lua_wrapper* warpper);
 	void  stack_print();
-	inline lua_State*  get_state() { return state; }
+	inline lua_State*  get_state() { return pState; }
+	bool load(std::string);
 
 	/*	
 	*	@func	: push
@@ -40,5 +41,5 @@ public:
 	void  push(const char* value);
 	void  push(lua_State* L, int idx);
 private:
-	lua_State* state;
+	lua_State* pState;
 };
