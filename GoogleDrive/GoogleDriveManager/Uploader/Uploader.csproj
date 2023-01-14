@@ -7,12 +7,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>4</WarningLevel>
-    <OutputPath>$(SolutionDir)bin\Debug</OutputPath>
+    <OutputPath>../../bin/Debug</OutputPath>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)bin\Release</OutputPath>
+    <OutputPath>../../bin/Release</OutputPath>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
