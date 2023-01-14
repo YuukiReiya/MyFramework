@@ -5,20 +5,10 @@
 # bat
 #bat/
 
-# gRPC
-Client/Assets/Plugins/*/Google.Protobuf
-Client/Assets/Plugins/*/Google.Protobuf.meta
-Client/Assets/Plugins/*/Grpc.Core
-Client/Assets/Plugins/*/Grpc.Core.meta
-Client/Assets/Plugins/*/Grpc.Core.Api
-Client/Assets/Plugins/*/Grpc.Core.Api.meta
-Client/Assets/Plugins/*/System.Buffers
-Client/Assets/Plugins/*/System.Buffers.meta
-Client/Assets/Plugins/*/System.Memory
-Client/Assets/Plugins/*/System.Memory.meta
-Client/Assets/Plugins/*/System.Runtime.CompilerServices.Unsafe
-Client/Assets/Plugins/*/System.Runtime.CompilerServices.Unsafe.meta
-Client/Assets/Plugins/*/System.Runtime.CompilerServices.Unsafe.meta
+# Server
+#Server/
+Server/Server/bin/
+Server/Server/obj/
 
 # Client
 #Client/
@@ -27,30 +17,27 @@ Client/Logs
 Client/obj
 Client/Temp
 Client/Assets/Plugins/NativePlugins/
+#Client/Assets/Plugins/xLua
 #Client/UpgradeLog.htm
 #Client/Packages/
 #Client/ProjectSettings/
 #Client/UserSettings/
 
 # gRPC
-gRPC/*
-
-# Protobuf
-#Protobuf/
-
-# Server
-#Server/
-Server/Server/bin/
-Server/Server/obj/
-
-# Setup
-#Setup/
+Client/Assets/Plugins/Grpc*
+Client/Assets/Plugins/Google.Protobuf*
+Client/Assets/Plugins/System.Buffers*
+Client/Assets/Plugins/System.Memory*
+Client/Assets/Plugins/System.Runtime.CompilerServices.Unsafe*
 
 # Managed Plugin (.NET Standard)
 #ManagedPlugins/*
 
 # Native Plugin (C++)
 #NativePlugins/*
+
+# Setup
+#Setup/
 
 # Github管理から外すフォルダ
 Exclusion/
