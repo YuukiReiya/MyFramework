@@ -71,6 +71,7 @@
     <Compile Include="src\Config.cs" />
     <Compile Include="src\GoogleServiceModel.cs" />
     <Compile Include="src\IniReader.cs" />
+    <Compile Include="src\PathExpansion.cs" />
     <Compile Include="src\ZipModel.cs" />
   </ItemGroup>
   <ItemGroup />

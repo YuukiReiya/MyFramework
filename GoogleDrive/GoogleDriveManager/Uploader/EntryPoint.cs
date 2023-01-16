@@ -4,6 +4,7 @@ using System.Linq;
 using Model;
 using System.Xml.Linq;
 using Resources.XML;
+using PE = PathExpansion;
 
 namespace Uploader
 {
@@ -15,10 +16,11 @@ namespace Uploader
             var documentXMLPath = args.Length > 0 ? args[0] : string.Empty;
             if (string.IsNullOrEmpty(documentXMLPath))
             {
-                documentXMLPath = "../../../res/config.xml";
+                //documentXMLPath = "../../../";
+                documentXMLPath = PE.Convert(Path.Combine(PathExpansion.GoogleDrive, $"res/config.xml"));
             }
 
-            if (!File.Exists(documentXMLPath))
+            if (!File.Exists(PE.Convert(documentXMLPath)))
             {
                 Console.WriteLine($"Not found xml file. > {Path.GetFullPath(documentXMLPath)}");
                 Console.ReadKey();
@@ -55,8 +57,11 @@ namespace Uploader
                 return;
             }
 
-            // 表示数.
-            GoogleServiceModel.PageSize = 15;
+            int pageSize;
+            if (int.TryParse(root.Element(Config._PageSizeTag).Value, out pageSize))
+            {
+                GoogleServiceModel.PageSize = pageSize;
+            }
 
             result = model.UpdateFilesCache();
             if (result != GoogleServiceModel.Result.Success)

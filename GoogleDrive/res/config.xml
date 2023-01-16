@@ -2,15 +2,17 @@
 <!-- 絶対パスの方が望ましい. -->
 <config>
 	<!-- credentials.json -->
-	<credentials>../../../../res/credentials.json</credentials>
+	<credentials>$GD/res/credentials.json</credentials>
 	<!-- token.json (フォルダ) -->
-	<token>../../../../res/token.json/</token>
+	<token>$GD/res/token.json/</token>
 	<!-- 一時保存 -->
-	<temp>../../../../temp</temp>
+	<temp>$GD/temp</temp>
 	<!-- Unity Client Folder -->
-	<client>../../../../../Client/</client>
+	<client>$CL</client>
 	<!-- Unity Client Assets Folder -->
-	<assets>../../../../Client/Assets</assets>
+	<assets>$CL/Assets</assets>
+	<!-- PageSize Drive上にファイルが存在するがDL/UP出来ない場合に増やす -->
+	<page>300</page>
 
 	<!-- memo.増やすときは'data'タグ配列を増やす. -->
 	<!-- アップロード関連 -->
@@ -18,7 +20,7 @@
 		<data>
 			<!--ローカル上のアップロード対象ファイル-->
 			<!--ドライブ上に挙がる時は'.zip'に圧縮される-->
-			<source>../../../../Client/Assets/ExternalResources/Exclusion</source>
+			<source>$CL/Assets/ExternalResources/Exclusion</source>
 			<destination>Template-OnlineProject/Exclusion.zip</destination>
 		</data>
 	</upload>
@@ -26,12 +28,12 @@
 	<download>
 		<data>
 			<!--ドライブ上のダウンロード対象ファイル(.zip)-->
-			<!-- <source>Template-OnlineProject/Exclusion.zip</source> -->
+			<source>Template-OnlineProject/Exclusion.zip</source>
 			<!--なんかフォルダ読み込まないことがあったのでディレクトリ抜いたver.-->
-			<source>Exclusion.zip</source>
+			<!-- <source>Exclusion.zip</source> -->
 			
 			<!--ローカル上の配置先-->
-			<destination>../../../../Client/Assets/ExternalResources/Exclusion</destination>
+			<destination>$CL/Assets/ExternalResources/Exclusion</destination>
 		</data>
 	</download>
 </config>
