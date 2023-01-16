@@ -4,6 +4,7 @@ using System.Linq;
 using Model;
 using System.Xml.Linq;
 using Resources.XML;
+using PE = PathExpansion;
 
 namespace Downloader
 {
@@ -14,16 +15,17 @@ namespace Downloader
         {
             var model = GoogleServiceModel.Instance;
             var documentXMLPath = args.Length > 0 ? args[0] : string.Empty;
-            var isOverwrite = args.Length > 1 ? Convert.ToBoolean(args[1]) : false;
+            var isOverwrite = args.Length > 1 ? Convert.ToBoolean(args[1]) : true;
             if (args.Length > 1)
             {
                 var arg = args[1];
             }
             if (string.IsNullOrEmpty(documentXMLPath))
             {
-                documentXMLPath = "../../../../res/config.xml";
+                //documentXMLPath = PE.Convert(Path.Combine(PE.GoogleDrive, $"res/config.xml"));
+                documentXMLPath = PE.Convert(Path.Combine(PE.GoogleDrive, $"res/project_setting.xml"));
             }
-
+            documentXMLPath = PE.Convert(documentXMLPath);
             if (!File.Exists(documentXMLPath))
             {
                 Console.WriteLine($"Not found xml file. > {Path.GetFullPath(documentXMLPath)}");
@@ -33,7 +35,7 @@ namespace Downloader
 
             var doc = XDocument.Load(documentXMLPath);
             var root = doc.Element(Config._RootTag);
-            var credentialPath = root.Element(Config._CredentialsTag).Value;
+            var credentialPath = PE.Convert(root.Element(Config._CredentialsTag).Value);
 
             if (!File.Exists(credentialPath))
             {
@@ -42,7 +44,7 @@ namespace Downloader
                 return;
             }
 
-            var tokenFolderPath = root.Element(Config._TokenTag).Value;
+            var tokenFolderPath = PE.Convert(root.Element(Config._TokenTag).Value);
 
 #if DEBUG//RELEASEビルドなら無い場合でもバイナリ直下に作る.
             if (!Directory.Exists(tokenFolderPath))
@@ -59,6 +61,12 @@ namespace Downloader
                 Console.WriteLine("Setup Failed.");
                 Console.ReadKey();
                 return;
+            }
+
+            int pageSize;
+            if (int.TryParse(root.Element(Config._PageSizeTag).Value, out pageSize))
+            {
+                GoogleServiceModel.PageSize = pageSize;
             }
 
             result = model.UpdateFilesCache();
@@ -83,7 +91,7 @@ namespace Downloader
                 Console.ReadKey();
             }
 
-            var temp = root.Element(Config._TempTag).Value;
+            var temp = PE.Convert(root.Element(Config._TempTag).Value);
             if (!Path.EndsInDirectorySeparator(temp))
             {
                 // Unix(Linux)が'/'だった気がするので合わせる.
@@ -95,8 +103,8 @@ namespace Downloader
             while (e.MoveNext())
             {
                 var current = e.Current;
-                var source = current.Element(Config._SourceTag).Value;
-                var destination = current.Element(Config._DestinationTag).Value;
+                var source = PE.Convert(current.Element(Config._SourceTag).Value);
+                var destination = PE.Convert(current.Element(Config._DestinationTag).Value);
 
                 // ダウンロード先のファイルがない.
                 if (!model.IsExist(source))
@@ -105,7 +113,7 @@ namespace Downloader
                     continue;
                 }
 
-                var downloadPath = temp + Path.GetFileName(source);
+                var downloadPath = Path.Combine(temp, Path.GetFileName(source));
 
                 // 保存先のディレクトリが無ければ作る.
                 var info = new DirectoryInfo(downloadPath);

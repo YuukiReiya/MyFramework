@@ -15,6 +15,7 @@ namespace Resources.XML
         public const string _TempTag = @"temp";
         public const string _ClientTag = @"client";
         public const string _AssetsTag = @"assets";
+        public const string _PageSizeTag = @"page";
         public const string _UploadTag = @"upload";
         public const string _DownloadTag = @"download";
         public const string _DataTag = @"data";
