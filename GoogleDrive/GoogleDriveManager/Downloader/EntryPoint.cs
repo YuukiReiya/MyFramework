@@ -15,7 +15,7 @@ namespace Downloader
         {
             var model = GoogleServiceModel.Instance;
             var documentXMLPath = args.Length > 0 ? args[0] : string.Empty;
-            var isOverwrite = args.Length > 1 ? Convert.ToBoolean(args[1]) : true;
+            var isOverwrite = args.Length > 1 ? Convert.ToBoolean(args[1]) : false;
             if (args.Length > 1)
             {
                 var arg = args[1];
