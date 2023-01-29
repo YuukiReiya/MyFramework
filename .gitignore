@@ -17,6 +17,7 @@ Client/Logs
 Client/obj
 Client/Temp
 Client/Assets/Plugins/NativePlugins/
+Client/Assets/XLua/Gen*
 #Client/Assets/Plugins/xLua
 #Client/UpgradeLog.htm
 #Client/Packages/
