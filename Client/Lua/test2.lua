@@ -1,1 +1,0 @@
-CS.UnityEngine.Debug.Log("call AB/test2.lua")
