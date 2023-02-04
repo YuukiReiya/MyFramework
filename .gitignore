@@ -20,7 +20,7 @@ Client/Assets/Plugins/NativePlugins/
 Client/Assets/XLua/Gen*
 #Client/Assets/Plugins/xLua
 #Client/UpgradeLog.htm
-#Client/Packages/
+Client/Packages/
 #Client/ProjectSettings/
 #Client/UserSettings/
 
