@@ -24,7 +24,7 @@ namespace Ini
         /// iniのエンコードタイプ
         /// memo.windowsはデフォルトでSHIFT_JIS
         /// </summary>
-        private readonly Encoding EncodingType = null;
+        //private readonly Encoding EncodingType = null;
 
         
         public Stack<string> SectionStack { get; private set; } = new Stack<string>();
