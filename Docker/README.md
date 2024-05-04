@@ -71,4 +71,10 @@ $docker compose ps
 
 // 起動中のコンテナに入る(デーモンで入り忘れ等)
 $docker compose exec <サービス名> bash
+
+// コンテナ群のシャットダウンに加えイメージ、ボリューム、未定義コンテナすべての削除
+$docker compose down rmi <イメージ名> --volumes --remove-orphans
+e.g. allキーワードを指定することで全てのイメージを破棄
+docker compose down rmi all --volumes --remove-orphans
+
 ```
